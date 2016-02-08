@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D264496D-6E76-49D5-9002-C9948A272139}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DbMigrate</RootNamespace>
+    <AssemblyName>DbMigrate</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Args">
+      <HintPath>..\packages\Args.1.0.4\lib\Net40\Args.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Model\Target.cs" />
+    <Compile Include="MigrateTo.cs" />
+    <Compile Include="Model\Support\Filesystem\DirectoryOnDisk.cs" />
+    <Compile Include="Model\Support\Do.cs" />
+    <Compile Include="Model\Support\Filesystem\FileOnDisk.cs" />
+    <Compile Include="Model\ChangePlan.cs" />
+    <Compile Include="Model\Migration.cs" />
+    <Compile Include="Model\ChangeGoal.cs" />
+    <Compile Include="Model\Support\Filesystem\DirectoryInMemory.cs" />
+    <Compile Include="Model\Support\Filesystem\FileInMemory.cs" />
+    <Compile Include="Model\IDatabase.cs" />
+    <Compile Include="Model\Support\Database\DatabaseLocalMemory.cs" />
+    <Compile Include="Model\Support\Database\DatabaseRemote.cs" />
+    <Compile Include="Model\Support\Filesystem\IDirectory.cs" />
+    <Compile Include="Model\Support\Filesystem\IFile.cs" />
+    <Compile Include="Model\IMigrationLoader.cs" />
+    <Compile Include="Model\Support\Database\ITranection.cs" />
+    <Compile Include="Model\MigrationSpecification.cs" />
+    <Compile Include="Model\Support\FileFormat\MigrationFile.cs" />
+    <Compile Include="Model\ChangePlanner.cs" />
+    <Compile Include="Model\MigrationSet.cs" />
+    <Compile Include="Model\Support\MigrationRepoDirectory.cs" />
+    <Compile Include="Model\Support\MigrationRepoInMemory.cs" />
+    <Compile Include="Model\Support\MigrationRepoMakeDbVersionAware.cs" />
+    <Compile Include="Model\Support\FileFormat\SectionFinder.cs" />
+    <Compile Include="Model\Support\Database\SqlServerTranection.cs" />
+    <Compile Include="Model\Support\Database\TrannectionTraceOnly.cs" />
+    <Compile Include="UI\User.cs" />
+    <Compile Include="UI\UserMessage.cs" />
+    <Compile Include="Util\FormatEnumerable.cs" />
+    <Compile Include="Util\HelperMethods.cs" />
+    <Compile Include="UI\MigrationParameters.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\Require.cs" />
+    <Compile Include="UI\TerminateAndShowHelp.cs" />
+    <Compile Include="UI\TerminateProgramWithMessageException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
