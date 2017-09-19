@@ -3,33 +3,33 @@ using DbMigrate.Model.Support.Database;
 
 namespace DbMigrate.Model
 {
-    public class Target : IDisposable
-    {
-        public Target(string connectionString, bool isTestDatabase)
-            : this(new DatabaseRemote(connectionString) {IsTestDatabase = isTestDatabase})
-        {
-        }
+	public class Target : IDisposable
+	{
+		public Target(string connectionString, bool isTestDatabase)
+			: this(new DatabaseRemote(connectionString) {IsTestDatabase = isTestDatabase})
+		{
+		}
 
-        public Target(IDatabase database)
-        {
-            this.Database = database;
-        }
+		public Target(IDatabase database)
+		{
+			Database = database;
+		}
 
-        public IDatabase Database { get; private set; }
+		public IDatabase Database { get; }
 
-        public void Dispose()
-        {
-            this.Database.Dispose();
-        }
+		public void Dispose()
+		{
+			Database.Dispose();
+		}
 
-        public ChangePlanner MigrateTo(int? targetVersion)
-        {
-            return new ChangePlanner(this.Database, FigureOutTheGoal(this.Database, targetVersion));
-        }
+		public ChangePlanner MigrateTo(int? targetVersion)
+		{
+			return new ChangePlanner(Database, FigureOutTheGoal(Database, targetVersion));
+		}
 
-        public static ChangeGoal FigureOutTheGoal(IDatabase database, int? targetVersion)
-        {
-            return new ChangeGoal(database.CurrentVersion.Result, targetVersion);
-        }
-    }
+		public static ChangeGoal FigureOutTheGoal(IDatabase database, int? targetVersion)
+		{
+			return new ChangeGoal(database.CurrentVersion.Result, targetVersion);
+		}
+	}
 }

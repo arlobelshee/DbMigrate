@@ -5,56 +5,56 @@ using DbMigrate.UI;
 
 namespace DbMigrate.Model.Support.Filesystem
 {
-    public class DirectoryOnDisk : IDirectory
-    {
-        private readonly DirectoryInfo _path;
+	public class DirectoryOnDisk : IDirectory
+	{
+		private readonly DirectoryInfo _path;
 
-        public DirectoryOnDisk(string path)
-        {
-            Require.Not(string.IsNullOrEmpty(path), 1, "You must supply a valid path to your migrations folder.");
-            this._path = new DirectoryInfo(path);
-        }
+		public DirectoryOnDisk(string path)
+		{
+			Require.Not(string.IsNullOrEmpty(path), 1, "You must supply a valid path to your migrations folder.");
+			_path = new DirectoryInfo(path);
+		}
 
-        public List<IFile> Files
-        {
-            get { return this._path.EnumerateFiles().Select(f => new FileOnDisk(f)).Cast<IFile>().ToList(); }
-        }
+		public List<IFile> Files
+		{
+			get { return _path.EnumerateFiles().Select(f => new FileOnDisk(f)).Cast<IFile>().ToList(); }
+		}
 
-        public bool Equals(IDirectory obj)
-        {
-            return this.Equals(obj as DirectoryOnDisk);
-        }
+		public bool Equals(IDirectory obj)
+		{
+			return Equals(obj as DirectoryOnDisk);
+		}
 
-        public bool Equals(DirectoryOnDisk other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(other._path.FullName, this._path.FullName);
-        }
+		public bool Equals(DirectoryOnDisk other)
+		{
+			if (ReferenceEquals(null, other)) return false;
+			if (ReferenceEquals(this, other)) return true;
+			return Equals(other._path.FullName, _path.FullName);
+		}
 
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as DirectoryOnDisk);
-        }
+		public override bool Equals(object obj)
+		{
+			return Equals(obj as DirectoryOnDisk);
+		}
 
-        public override int GetHashCode()
-        {
-            return this._path.FullName.GetHashCode();
-        }
+		public override int GetHashCode()
+		{
+			return _path.FullName.GetHashCode();
+		}
 
-        public static bool operator ==(DirectoryOnDisk left, DirectoryOnDisk right)
-        {
-            return Equals(left, right);
-        }
+		public static bool operator ==(DirectoryOnDisk left, DirectoryOnDisk right)
+		{
+			return Equals(left, right);
+		}
 
-        public static bool operator !=(DirectoryOnDisk left, DirectoryOnDisk right)
-        {
-            return !Equals(left, right);
-        }
+		public static bool operator !=(DirectoryOnDisk left, DirectoryOnDisk right)
+		{
+			return !Equals(left, right);
+		}
 
-        public override string ToString()
-        {
-            return this._path.FullName;
-        }
-    }
+		public override string ToString()
+		{
+			return _path.FullName;
+		}
+	}
 }
