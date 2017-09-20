@@ -1,12 +1,13 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.Common;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 namespace DbMigrate.Model.Support.Database
 {
 	public class DbTranection : ITranection
 	{
+		private const string SqlServerProvider = "System.Data.SqlClient";
 		private DbConnection _connection;
 		private DbTransaction _transaction;
 
@@ -31,11 +32,11 @@ namespace DbMigrate.Model.Support.Database
 		{
 			var command = GetCommand(sql);
 			return command.ExecuteReaderAsync()
-					.ContinueWith(t =>
-					{
-						command.Dispose(); // before attempting to check the result, in case there was an exception.
-						return ReadScalar<T>(t.Result);
-					});
+				.ContinueWith(t =>
+				{
+					command.Dispose(); // before attempting to check the result, in case there was an exception.
+					return ReadScalar<T>(t.Result);
+				});
 		}
 
 		public Task<int> ExecuteNonQuery(string sql)
@@ -59,7 +60,12 @@ namespace DbMigrate.Model.Support.Database
 		private void EnsureIsOpen()
 		{
 			if (IsOpen) return;
-			_connection = new SqlConnection(ConnectionString);
+			var factory = DbProviderFactories.GetFactory(SqlServerProvider);
+			_connection = factory.CreateConnection();
+			if (_connection == null)
+				throw new InvalidOperationException(
+					$"Failed to connect to database using provider {SqlServerProvider} and connection string {ConnectionString}");
+			_connection.ConnectionString = ConnectionString;
 			_connection.Open();
 			_transaction = _connection.BeginTransaction(IsolationLevel.Serializable);
 		}
