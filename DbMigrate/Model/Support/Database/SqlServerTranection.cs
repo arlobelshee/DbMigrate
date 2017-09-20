@@ -30,10 +30,7 @@ namespace DbMigrate.Model.Support.Database
 		public Task<T> ExecuteScalar<T>(string sql)
 		{
 			var command = GetCommand(sql);
-			return
-				Task<SqlDataReader>.Factory.FromAsync(
-						((SqlCommand) command).BeginExecuteReader(CommandBehavior.SingleResult | CommandBehavior.SingleRow),
-						((SqlCommand) command).EndExecuteReader)
+			return command.ExecuteReaderAsync<T>()
 					.ContinueWith(t =>
 					{
 						command.Dispose(); // before attempting to check the result, in case there was an exception.
@@ -44,8 +41,7 @@ namespace DbMigrate.Model.Support.Database
 		public Task<int> ExecuteNonQuery(string sql)
 		{
 			var command = GetCommand(sql);
-			return Task<int>.Factory.FromAsync(((SqlCommand) command).BeginExecuteNonQuery(),
-					((SqlCommand) command).EndExecuteNonQuery)
+			return command.ExecuteNonQueryAnync()
 				.ContinueWith(numRows =>
 				{
 					command.Dispose();
