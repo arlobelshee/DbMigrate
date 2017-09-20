@@ -30,7 +30,7 @@ namespace DbMigrate.Model.Support.Database
 		public Task<T> ExecuteScalar<T>(string sql)
 		{
 			var command = GetCommand(sql);
-			return command.ExecuteReaderAsync<T>()
+			return command.ExecuteReaderAsync()
 					.ContinueWith(t =>
 					{
 						command.Dispose(); // before attempting to check the result, in case there was an exception.
