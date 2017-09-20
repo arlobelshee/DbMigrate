@@ -9,6 +9,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 	public class ExecuteSqlAgainstADatabase
 	{
 		private const string LocalMasterDb = "Server=.\\SQLEXPRESS;Database=master;Trusted_Connection=True;";
+		private const string LocalSQLiteDb = "Provider=sqlite;Data Source=:memory:;Version=3;New=true;";
 
 		private const string CreateJunkTable =
 			@"CREATE TABLE some_junk_table{0} (
