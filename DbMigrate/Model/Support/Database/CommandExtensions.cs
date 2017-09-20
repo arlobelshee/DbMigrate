@@ -9,9 +9,9 @@ namespace DbMigrate.Model.Support.Database
 	{
 		public static Task<int> ExecuteNonQueryAnync(this DbCommand command)
 		{
-			if (command is SqlCommand)
+			var sqlCommand = command as SqlCommand;
+			if (sqlCommand != null)
 			{
-				var sqlCommand = (SqlCommand) command;
 				return Task<int>.Factory.FromAsync(sqlCommand.BeginExecuteNonQuery(),
 					sqlCommand.EndExecuteNonQuery);
 			}
@@ -20,9 +20,9 @@ namespace DbMigrate.Model.Support.Database
 
 		public static Task<DbDataReader> ExecuteReaderAsync(this DbCommand command)
 		{
-			if (command is SqlCommand)
+			var sqlCommand = command as SqlCommand;
+			if (sqlCommand != null)
 			{
-				var sqlCommand = (SqlCommand) command;
 				return Task<DbDataReader>.Factory.FromAsync(
 					sqlCommand.BeginExecuteReader(CommandBehavior.SingleResult | CommandBehavior.SingleRow),
 					sqlCommand.EndExecuteReader);
