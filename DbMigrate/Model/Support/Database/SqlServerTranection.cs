@@ -16,17 +16,13 @@ namespace DbMigrate.Model.Support.Database
 
 		public void Dispose()
 		{
-			if (!IsOpen) return;
-			_transaction.Rollback();
-			_connection.Close();
+			_transaction?.Rollback();
 			_transaction = null;
+			_connection?.Close();
 			_connection = null;
 		}
 
-		public bool IsOpen
-		{
-			get { return _connection != null; }
-		}
+		public bool IsOpen => _connection != null;
 
 		public string ConnectionString { get; }
 
