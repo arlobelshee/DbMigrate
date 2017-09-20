@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace DbMigrate.Model.Support.Database
 {
-	public class SqlServerTranection : ITranection
+	public class DbTranection : ITranection
 	{
 		private DbConnection _connection;
 		private DbTransaction _transaction;
 
-		public SqlServerTranection(string connectionString)
+		public DbTranection(string connectionString)
 		{
 			ConnectionString = connectionString + "Asynchronous Processing=True;MultipleActiveResultSets=true;";
 		}

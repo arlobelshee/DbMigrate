@@ -22,7 +22,7 @@ end";
 		private const string UpdateVersionSqlFormat = "update __database_info set version_number = {0};";
 
 		public DatabaseRemote(string connectionString)
-			: this(new SqlServerTranection(connectionString))
+			: this(new DbTranection(connectionString))
 		{
 		}
 

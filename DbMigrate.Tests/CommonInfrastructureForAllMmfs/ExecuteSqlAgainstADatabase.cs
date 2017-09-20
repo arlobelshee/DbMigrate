@@ -32,19 +32,19 @@ drop table some_junk_table{0};";
 			_tableUid = Guid.NewGuid().ToString("N");
 		}
 
-		private void MakeJunkTable(SqlServerTranection testSubject)
+		private void MakeJunkTable(DbTranection testSubject)
 		{
 			testSubject.ExecuteNonQuery(string.Format(CreateJunkTable, _tableUid))
 				.Wait();
 		}
 
-		private void NumJunkTablesShouldBe(SqlServerTranection testSubject, int expected)
+		private void NumJunkTablesShouldBe(DbTranection testSubject, int expected)
 		{
 			testSubject.ExecuteScalar<int>(string.Format(CountJunkTables, _tableUid))
 				.Result.Should().Be(expected);
 		}
 
-		private void RemoveJunkTable(SqlServerTranection testSubject)
+		private void RemoveJunkTable(DbTranection testSubject)
 		{
 			testSubject.ExecuteNonQuery(string.Format(DropJunkTable, _tableUid))
 				.Wait();
@@ -55,20 +55,20 @@ drop table some_junk_table{0};";
 		{
 			try
 			{
-				using (var testSubject = new SqlServerTranection(LocalMasterDb))
+				using (var testSubject = new DbTranection(LocalMasterDb))
 				{
 					MakeJunkTable(testSubject);
 					NumJunkTablesShouldBe(testSubject, 1);
 					testSubject.Commit();
 				}
-				using (var testSubject = new SqlServerTranection(LocalMasterDb))
+				using (var testSubject = new DbTranection(LocalMasterDb))
 				{
 					NumJunkTablesShouldBe(testSubject, 1);
 				}
 			}
 			finally
 			{
-				using (var testSubject = new SqlServerTranection(LocalMasterDb))
+				using (var testSubject = new DbTranection(LocalMasterDb))
 				{
 					RemoveJunkTable(testSubject);
 					testSubject.Commit();
@@ -79,7 +79,7 @@ drop table some_junk_table{0};";
 		[TestMethod]
 		public void SqlTrannectionShouldCloseItsConnectionWhenItIsDisposed()
 		{
-			using (var testSubject = new SqlServerTranection(LocalMasterDb))
+			using (var testSubject = new DbTranection(LocalMasterDb))
 			{
 				testSubject.IsOpen.Should().BeFalse();
 				testSubject.ExecuteScalar<int>("select count(*) from sys.objects;").Result.Should().BeGreaterThan(10);
@@ -92,7 +92,7 @@ drop table some_junk_table{0};";
 		[TestMethod]
 		public void SqlTrannectionShouldExecuteNonQuery()
 		{
-			using (var testSubject = new SqlServerTranection(LocalMasterDb))
+			using (var testSubject = new DbTranection(LocalMasterDb))
 			{
 				testSubject.ExecuteNonQuery(string.Format(CreateJunkTable, _tableUid))
 					.Wait();
@@ -104,7 +104,7 @@ drop table some_junk_table{0};";
 		[TestMethod]
 		public void SqlTrannectionShouldExecuteSqlOnItsTarget()
 		{
-			using (var testSubject = new SqlServerTranection(LocalMasterDb))
+			using (var testSubject = new DbTranection(LocalMasterDb))
 			{
 				testSubject.ExecuteScalar<int>("select count(*) from sys.objects;").Result.Should().BeGreaterThan(10);
 			}
@@ -113,12 +113,12 @@ drop table some_junk_table{0};";
 		[TestMethod]
 		public void SqlTrannectionShouldRollbackUnlessInstructedOtherwise()
 		{
-			using (var testSubject = new SqlServerTranection(LocalMasterDb))
+			using (var testSubject = new DbTranection(LocalMasterDb))
 			{
 				MakeJunkTable(testSubject);
 				NumJunkTablesShouldBe(testSubject, 1);
 			}
-			using (var testSubject = new SqlServerTranection(LocalMasterDb))
+			using (var testSubject = new DbTranection(LocalMasterDb))
 			{
 				NumJunkTablesShouldBe(testSubject, 0);
 			}

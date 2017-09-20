@@ -86,7 +86,7 @@
     <Compile Include="Model\Support\MigrationRepoInMemory.cs" />
     <Compile Include="Model\Support\MigrationRepoMakeDbVersionAware.cs" />
     <Compile Include="Model\Support\FileFormat\SectionFinder.cs" />
-    <Compile Include="Model\Support\Database\SqlServerTranection.cs" />
+    <Compile Include="Model\Support\Database\DbTranection.cs" />
     <Compile Include="Model\Support\Database\TrannectionTraceOnly.cs" />
     <Compile Include="UI\User.cs" />
     <Compile Include="UI\UserMessage.cs" />
