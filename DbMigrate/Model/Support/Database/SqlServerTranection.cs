@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -6,8 +7,8 @@ namespace DbMigrate.Model.Support.Database
 {
 	public class SqlServerTranection : ITranection
 	{
-		private SqlConnection _connection;
-		private SqlTransaction _transaction;
+		private DbConnection _connection;
+		private DbTransaction _transaction;
 
 		public SqlServerTranection(string connectionString)
 		{
@@ -31,7 +32,8 @@ namespace DbMigrate.Model.Support.Database
 			var command = GetCommand(sql);
 			return
 				Task<SqlDataReader>.Factory.FromAsync(
-						command.BeginExecuteReader(CommandBehavior.SingleResult | CommandBehavior.SingleRow), command.EndExecuteReader)
+						((SqlCommand) command).BeginExecuteReader(CommandBehavior.SingleResult | CommandBehavior.SingleRow),
+						((SqlCommand) command).EndExecuteReader)
 					.ContinueWith(t =>
 					{
 						command.Dispose(); // before attempting to check the result, in case there was an exception.
@@ -42,7 +44,8 @@ namespace DbMigrate.Model.Support.Database
 		public Task<int> ExecuteNonQuery(string sql)
 		{
 			var command = GetCommand(sql);
-			return Task<int>.Factory.FromAsync(command.BeginExecuteNonQuery(), command.EndExecuteNonQuery)
+			return Task<int>.Factory.FromAsync(((SqlCommand) command).BeginExecuteNonQuery(),
+					((SqlCommand) command).EndExecuteNonQuery)
 				.ContinueWith(numRows =>
 				{
 					command.Dispose();
@@ -65,7 +68,7 @@ namespace DbMigrate.Model.Support.Database
 			_transaction = _connection.BeginTransaction(IsolationLevel.Serializable);
 		}
 
-		private SqlCommand GetCommand(string sql)
+		private DbCommand GetCommand(string sql)
 		{
 			EnsureIsOpen();
 			var command = _connection.CreateCommand();
