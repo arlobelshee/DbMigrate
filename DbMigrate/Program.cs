@@ -49,8 +49,7 @@ namespace DbMigrate
 			try
 			{
 				var args = commandLineParser.CreateAndBind(commandLine);
-				Require.Not(args.Help || string.IsNullOrEmpty(args.ConnectionString) ||
-				            string.IsNullOrEmpty(args.Migrations));
+				Require.Not(args.Help || string.IsNullOrEmpty(args.ConnectionString) || string.IsNullOrEmpty(args.Migrations));
 				return args;
 			}
 			catch (Exception)
