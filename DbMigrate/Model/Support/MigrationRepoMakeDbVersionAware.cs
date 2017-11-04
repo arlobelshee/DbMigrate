@@ -9,10 +9,7 @@ namespace DbMigrate.Model.Support
 			return !ReferenceEquals(null, other);
 		}
 
-		public int MaxMigrationVersionFound
-		{
-			get { return 0; }
-		}
+		public int MaxMigrationVersionFound => 0;
 
 		public MigrationSpecification LoadMigrationIfPresent(int version)
 		{

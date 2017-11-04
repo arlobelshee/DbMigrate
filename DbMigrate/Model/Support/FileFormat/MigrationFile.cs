@@ -97,8 +97,7 @@ namespace DbMigrate.Model.Support.FileFormat
 
 		private void FinishCurrentSection()
 		{
-			if (_currentSection == null) return;
-			_currentSection.Store();
+			_currentSection?.Store();
 		}
 
 		private void BeginStoringTo(string sectionName)
@@ -124,14 +123,13 @@ namespace DbMigrate.Model.Support.FileFormat
 				_currentLine,
 				_fileName,
 				Version,
-				_expectedSections.Format(s => string.Format("  {0}", s.Name), "\r\n"),
+				_expectedSections.Format(s => $"  {s.Name}", "\r\n"),
 				sectionNamefound);
 		}
 
 		private static string SectionErrorFormat(string specificErrorFound)
 		{
-			return UserMessage.ErrorMigrationFileParsePrefix + specificErrorFound +
-			       UserMessage.ErrorSectionProblem;
+			return UserMessage.ErrorMigrationFileParsePrefix + specificErrorFound + UserMessage.ErrorSectionProblem;
 		}
 	}
 }

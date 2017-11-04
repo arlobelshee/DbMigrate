@@ -20,10 +20,7 @@ namespace DbMigrate.Model.Support.FileFormat
 
 		public int Order { get; }
 
-		public bool IsEmpty
-		{
-			get { return !_hasBeenEncountered; }
-		}
+		public bool IsEmpty => !_hasBeenEncountered;
 
 		public void OnBeginSection()
 		{

@@ -81,7 +81,7 @@ namespace DbMigrate.Model.Support
 
 		public override string ToString()
 		{
-			return string.Format("Migrations in folder {0}.", _backingRepository);
+			return $"Migrations in folder {_backingRepository}.";
 		}
 	}
 }

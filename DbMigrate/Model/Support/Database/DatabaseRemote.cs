@@ -33,17 +33,11 @@ end";
 
 		public ITranection Tranection { get; }
 
-		public string ConnectionString
-		{
-			get { return Tranection.ConnectionString; }
-		}
+		public string ConnectionString => Tranection.ConnectionString;
 
 		public bool IsTestDatabase { get; set; }
 
-		public Task<int> CurrentVersion
-		{
-			get { return Tranection.ExecuteScalar<int>(RequestVersionSql); }
-		}
+		public Task<int> CurrentVersion => Tranection.ExecuteScalar<int>(RequestVersionSql);
 
 		public void Commit()
 		{
