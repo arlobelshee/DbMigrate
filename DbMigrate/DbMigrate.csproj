@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Support\Database\CommandExtensions.cs" />
+    <Compile Include="Model\Support\Database\DbEngine.cs" />
     <Compile Include="Model\Target.cs" />
     <Compile Include="MigrateTo.cs" />
     <Compile Include="Model\Support\Filesystem\DirectoryOnDisk.cs" />

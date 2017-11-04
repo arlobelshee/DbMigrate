@@ -6,16 +6,6 @@ namespace DbMigrate.Model.Support.Database
 {
 	public class DatabaseRemote : IDatabase
 	{
-		private const string RequestVersionSql =
-			@"if exists(select * from sys.objects where name = '__database_info' and type in ('U'))
-begin
-	select top 1 version_number from __database_info;
-end
-else
-begin
-	select -1;
-end";
-
 		// format strings in sql == really bad idea. However, the values aren't coming from a user and aren't
 		// strings, so not as bad. And I don't want to take the time right now to support parameters in
 		// my fully-encapsulated commands.
@@ -37,7 +27,7 @@ end";
 
 		public bool IsTestDatabase { get; set; }
 
-		public Task<int> CurrentVersion => Tranection.ExecuteScalar<int>(RequestVersionSql);
+		public Task<int> CurrentVersion => Tranection.ExecuteScalar<int>(DbEngine.SqlServer.RequestVersionSql);
 
 		public void Commit()
 		{
