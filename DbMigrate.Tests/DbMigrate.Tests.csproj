@@ -88,6 +88,9 @@
     <Compile Include="__UtilitiesForTesting\TestData.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\DbMigrate\App.config">
+      <Link>App.config</Link>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
