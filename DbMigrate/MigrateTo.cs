@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using DbMigrate.Model;
+using DbMigrate.Model.Support.Database;
 using DbMigrate.UI;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -48,7 +49,7 @@ namespace DbMigrate
 			try
 			{
 				User.OnNotify += message => Log.LogMessage(message);
-				using (var db = new Target(ConnectionString, IsTestDatabase))
+				using (var db = new Target(DbEngine.SqlServer, ConnectionString, IsTestDatabase))
 				{
 					db.MigrateTo(TargetVersion)
 						.UsingMigrationsFrom(MigrationFolderName)

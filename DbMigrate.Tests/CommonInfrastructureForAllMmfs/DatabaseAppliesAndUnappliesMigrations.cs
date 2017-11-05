@@ -39,7 +39,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		public void RealDatabaseShouldApplyMigrationsByExecutingSql()
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection);
+			var testSubject = new DatabaseRemote(tranection, DbEngine.None);
 			testSubject.Apply(Migration2);
 			testSubject.Apply(Migration3);
 			tranection.SqlExecuted.Should().Equal(new[] {Migration2.Apply, Migration3.Apply});
@@ -49,7 +49,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		public void RealDatabaseShouldNoOpToApplyMigrationsWhichDoNothingWhenApplied()
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection);
+			var testSubject = new DatabaseRemote(tranection, DbEngine.None);
 			testSubject.Apply(MigrationEmpty);
 			tranection.SqlExecuted.Should().BeEmpty();
 		}
@@ -58,7 +58,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		public void RealDatabaseShouldNoOpToUnapplyMigrationsWhichDoNothingWhenUnapplied()
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection);
+			var testSubject = new DatabaseRemote(tranection, DbEngine.None);
 			testSubject.Unapply(MigrationEmpty);
 			tranection.SqlExecuted.Should().BeEmpty();
 		}
@@ -67,7 +67,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		public void RealDatabaseShouldUnapplyMigrationsByExecutingSql()
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection);
+			var testSubject = new DatabaseRemote(tranection, DbEngine.None);
 			testSubject.Unapply(Migration3);
 			testSubject.Unapply(Migration2);
 			tranection.SqlExecuted.Should().Equal(new[] {Migration3.Unapply, Migration2.Unapply});

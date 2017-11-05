@@ -5,8 +5,8 @@ namespace DbMigrate.Model
 {
 	public class Target : IDisposable
 	{
-		public Target(string connectionString, bool isTestDatabase)
-			: this(new DatabaseRemote(connectionString) {IsTestDatabase = isTestDatabase})
+		public Target(DbEngine dbEngine, string connectionString, bool isTestDatabase)
+			: this(new DatabaseRemote(dbEngine, connectionString) {IsTestDatabase = isTestDatabase})
 		{
 		}
 

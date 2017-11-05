@@ -17,7 +17,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		public void DatabaseShouldCommitItsTranection()
 		{
 			var tracer = new TrannectionTraceOnly();
-			var testSubject = new DatabaseRemote(tracer);
+			var testSubject = new DatabaseRemote(tracer, DbEngine.None);
 			testSubject.Commit();
 			tracer.IsCommitted.Should().BeTrue();
 		}
@@ -26,7 +26,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		public void DatabaseShouldCreateATranection()
 		{
 			const string connectionString = "some fake connection string;";
-			var testSubject = new DatabaseRemote(connectionString);
+			var testSubject = new DatabaseRemote(DbEngine.None, connectionString);
 			testSubject.Tranection.Should().BeOfType<DbTranection>();
 			testSubject.Tranection.ShouldBeEquivalentTo(
 				new {IsOpen = false, ConnectionString = ExpectedConnectionString(connectionString)},
@@ -37,7 +37,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		public void DatabaseShouldDisposeItsTranection()
 		{
 			var tracer = new TrannectionTraceOnly();
-			var testSubject = new DatabaseRemote(tracer);
+			var testSubject = new DatabaseRemote(tracer, DbEngine.None);
 			testSubject.Dispose();
 			tracer.IsDisposed.Should().BeTrue();
 		}
@@ -46,7 +46,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		public void TargetShouldConnectToNonProductionDatabasesCorrectly()
 		{
 			const string connectionString = "some fake connection string;";
-			var testSubject = new Target(connectionString, true);
+			var testSubject = new Target(DbEngine.None, connectionString, true);
 			testSubject.Database.Should().BeOfType<DatabaseRemote>();
 			testSubject.Database.IsTestDatabase.Should().BeTrue();
 		}
@@ -55,7 +55,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		public void TargetShouldCreateADatabase()
 		{
 			const string connectionString = "some fake connection string;";
-			var testSubject = new Target(connectionString, false);
+			var testSubject = new Target(DbEngine.None, connectionString, false);
 			testSubject.Database.Should().BeOfType<DatabaseRemote>();
 			((DatabaseRemote) testSubject.Database).ShouldBeEquivalentTo(
 				new {ConnectionString = ExpectedConnectionString(connectionString)}, options => options.ExcludingMissingMembers());

@@ -11,14 +11,17 @@ namespace DbMigrate.Model.Support.Database
 		// my fully-encapsulated commands.
 		private const string UpdateVersionSqlFormat = "update __database_info set version_number = {0};";
 
-		public DatabaseRemote(string connectionString)
-			: this(new DbTranection(DbEngine.SqlServer, connectionString))
+		private readonly DbEngine _dbEngine;
+
+		public DatabaseRemote(DbEngine dbEngine, string connectionString)
+			: this(new DbTranection(dbEngine, connectionString), dbEngine)
 		{
 		}
 
-		public DatabaseRemote(ITranection tranection)
+		public DatabaseRemote(ITranection tranection, DbEngine dbEngine)
 		{
 			Tranection = tranection;
+			_dbEngine = dbEngine;
 		}
 
 		public ITranection Tranection { get; }
@@ -27,7 +30,7 @@ namespace DbMigrate.Model.Support.Database
 
 		public bool IsTestDatabase { get; set; }
 
-		public Task<int> CurrentVersion => Tranection.ExecuteScalar<int>(DbEngine.SqlServer.RequestVersionSql);
+		public Task<int> CurrentVersion => Tranection.ExecuteScalar<int>(_dbEngine.RequestVersionSql);
 
 		public void Commit()
 		{

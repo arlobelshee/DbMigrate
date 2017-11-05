@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Args;
 using DbMigrate.Model;
+using DbMigrate.Model.Support.Database;
 using DbMigrate.UI;
 
 namespace DbMigrate
@@ -14,7 +15,7 @@ namespace DbMigrate
 			{
 				var args = ParseCommandLine(commandLine);
 				User.OnNotify += Console.WriteLine;
-				using (var db = new Target(args.ConnectionString, args.IsTestDatabase))
+				using (var db = new Target(DbEngine.SqlServer, args.ConnectionString, args.IsTestDatabase))
 				{
 					Console.WriteLine();
 					db.MigrateTo(args.TargetVersion)

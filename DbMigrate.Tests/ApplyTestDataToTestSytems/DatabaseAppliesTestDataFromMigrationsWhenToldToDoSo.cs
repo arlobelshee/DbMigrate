@@ -28,7 +28,7 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
 		[Test]
 		public void RemoteDatabaseShouldDefaultToBeProductionDatabase()
 		{
-			var db = new DatabaseRemote(new TrannectionTraceOnly());
+			var db = new DatabaseRemote(new TrannectionTraceOnly(), DbEngine.None);
 			db.IsTestDatabase.Should().BeFalse();
 		}
 
@@ -36,7 +36,7 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
 		public void ProductionRemoteDatabaseShouldNotApplyTestData()
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection);
+			var testSubject = new DatabaseRemote(tranection, DbEngine.None);
 			testSubject.Apply(Migration2);
 			testSubject.Apply(Migration3);
 			tranection.SqlExecuted.Should().Equal(new[] {Migration2.Apply, Migration3.Apply});
@@ -46,7 +46,7 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
 		public void NonProductionRemoteDatabaseShouldApplyTestData()
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection) {IsTestDatabase = true};
+			var testSubject = new DatabaseRemote(tranection, DbEngine.None) {IsTestDatabase = true};
 			testSubject.Apply(Migration2);
 			testSubject.Apply(Migration3);
 			tranection.SqlExecuted.Should().Equal(new[]
@@ -57,7 +57,7 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
 		public void ShouldNeverInsertTestDataWhichIsNoOp()
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection) {IsTestDatabase = true};
+			var testSubject = new DatabaseRemote(tranection, DbEngine.None) {IsTestDatabase = true};
 			testSubject.Apply(MigrationWithoutTestData);
 			tranection.SqlExecuted.Should().Equal(new[] {MigrationWithoutTestData.Apply});
 		}
@@ -66,7 +66,7 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
 		public void ProductionRemoteDatabaseShouldNotRemoveTestData()
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection);
+			var testSubject = new DatabaseRemote(tranection, DbEngine.None);
 			testSubject.Unapply(Migration3);
 			testSubject.Unapply(Migration2);
 			tranection.SqlExecuted.Should().Equal(new[] {Migration3.Unapply, Migration2.Unapply});
@@ -76,7 +76,7 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
 		public void NonProductionRemoteDatabaseShouldRemoveTestData()
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection) {IsTestDatabase = true};
+			var testSubject = new DatabaseRemote(tranection, DbEngine.None) {IsTestDatabase = true};
 			testSubject.Unapply(Migration3);
 			testSubject.Unapply(Migration2);
 			tranection.SqlExecuted.Should().Equal(new[]
@@ -87,7 +87,7 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
 		public void ShouldNeverDeleteTestDataWhichIsNoOp()
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection) {IsTestDatabase = true};
+			var testSubject = new DatabaseRemote(tranection, DbEngine.None) {IsTestDatabase = true};
 			testSubject.Unapply(MigrationWithoutTestData);
 			tranection.SqlExecuted.Should().Equal(new[] {MigrationWithoutTestData.Unapply});
 		}

@@ -8,16 +8,6 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 	[TestFixture]
 	public class DatabaseManageDbVersion
 	{
-		private const string RequestVersionSql = @"
-if exists(select * from sys.objects where name = '__database_info' and type in ('U'))
-begin
-	select top 1 version_number from __database_info;
-end
-else
-begin
-	select -1;
-end";
-
 		private const string CreateVersionInfoTableSql =
 			@"create table __database_info(
   version_number int
@@ -31,11 +21,11 @@ insert into __database_info(version_number) values(0);";
 		public void DatabaseShouldKnowItsCurrentVersion()
 		{
 			var tracer = new TrannectionTraceOnly();
-			var testSubject = new DatabaseRemote(tracer);
+			var testSubject = new DatabaseRemote(tracer, DbEngine.SqlLite);
 			tracer.ExecuteScalarHandler =
 				sql =>
 				{
-					sql.Should().Be(RequestVersionSql);
+					sql.Should().Be(DbEngine.SqlLite.RequestVersionSql);
 					return 6;
 				};
 			testSubject.CurrentVersion.Result.Should().Be(6);
@@ -60,7 +50,7 @@ insert into __database_info(version_number) values(0);";
 		public void ShouldBeAbleToGoToNewVersion()
 		{
 			var tracer = new TrannectionTraceOnly();
-			var testSubject = new DatabaseRemote(tracer);
+			var testSubject = new DatabaseRemote(tracer, DbEngine.None);
 			var hasBeenCalled = false;
 			tracer.ExecuteNonQueryHandler =
 				sql =>

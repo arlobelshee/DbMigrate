@@ -22,6 +22,8 @@ when 1 then (select top 1 version_number from __database_info)
 else -1
 end", typeof(SQLiteCommand));
 
+		public static DbEngine None = new DbEngine("", null, null);
+
 		private readonly Type _arbitraryTypeReferenceToEnsureLibraryIsReferencedAndCopied;
 		public readonly string ProviderFactoryName;
 		public readonly string RequestVersionSql;
