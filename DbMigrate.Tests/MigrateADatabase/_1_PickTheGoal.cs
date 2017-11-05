@@ -1,14 +1,14 @@
 ﻿using DbMigrate.Model;
 using DbMigrate.Model.Support.Database;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.MigrateADatabase
 {
-	[TestClass]
+	[TestFixture]
 	public class _1_PickTheGoal
 	{
-		[TestMethod]
+		[Test]
 		public void ShouldChooseToGoFromDatabaseCurrentVersionToTarget()
 		{
 			var database = new DatabaseLocalMemory();

@@ -1,11 +1,11 @@
 ﻿using DbMigrate.Model.Support;
 using DbMigrate.Model.Support.Filesystem;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.MigrateADatabase
 {
-	[TestClass]
+	[TestFixture]
 	public class _3B_LocateMigrationDefinitionsInMigrationFolder
 	{
 		private static DirectoryInMemory DirectoryWithTwoMigrations()
@@ -16,14 +16,14 @@ namespace DbMigrate.Tests.MigrateADatabase
 			return folder;
 		}
 
-		[TestMethod]
+		[Test]
 		public void FolderBasedMigrationLoaderShouldFindAllMigrationsInOneFolder()
 		{
 			var testSubject = new MigrationRepoDirectory(DirectoryWithTwoMigrations());
 			testSubject.MaxMigrationVersionFound.Should().Be(2);
 		}
 
-		[TestMethod]
+		[Test]
 		public void FolderBasedMigrationLoaderShouldFindMigrationsThatAreDefinedInTheFolder()
 		{
 			var testSubject = new MigrationRepoDirectory(DirectoryWithTwoMigrations());
@@ -33,14 +33,14 @@ namespace DbMigrate.Tests.MigrateADatabase
 			result.Apply.Should().Be("create table Foo;");
 		}
 
-		[TestMethod]
+		[Test]
 		public void FolderBasedMigrationLoaderShouldFindNothingWithAnEmptyDirectory()
 		{
 			var testSubject = new MigrationRepoDirectory(new DirectoryInMemory());
 			testSubject.MaxMigrationVersionFound.Should().Be(-1);
 		}
 
-		[TestMethod]
+		[Test]
 		public void FolderBasedMigrationLoaderShouldIgnoreNonMigrationFiles()
 		{
 			var repo = DirectoryWithTwoMigrations();
@@ -49,7 +49,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 			testSubject.MaxMigrationVersionFound.Should().Be(2);
 		}
 
-		[TestMethod]
+		[Test]
 		public void FolderBasedMigrationLoaderShouldNotFindUndefinedMigrations()
 		{
 			var testSubject = new MigrationRepoDirectory(DirectoryWithTwoMigrations());

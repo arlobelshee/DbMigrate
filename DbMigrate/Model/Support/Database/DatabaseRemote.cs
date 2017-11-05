@@ -12,7 +12,7 @@ namespace DbMigrate.Model.Support.Database
 		private const string UpdateVersionSqlFormat = "update __database_info set version_number = {0};";
 
 		public DatabaseRemote(string connectionString)
-			: this(new DbTranection(connectionString))
+			: this(new DbTranection(DbEngine.SqlServer, connectionString))
 		{
 		}
 

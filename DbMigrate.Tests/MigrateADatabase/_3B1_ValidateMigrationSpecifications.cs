@@ -4,11 +4,11 @@ using DbMigrate.Model;
 using DbMigrate.Model.Support.FileFormat;
 using DbMigrate.UI;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.MigrateADatabase
 {
-	[TestClass]
+	[TestFixture]
 	public class _3B1_ValidateMigrationSpecifications
 	{
 		private const string MigrationWithDuplicateSection =
@@ -55,7 +55,7 @@ section header, not at the end of the section.
 			return () => new MigrationSpecification(new MigrationFile(new StringReader(trivialMigration), fileName));
 		}
 
-		[TestMethod]
+		[Test]
 		public void BadMigrationFileNameShouldThrowFriendlyMessage()
 		{
 			Action testSubject = () => MigrationFile.FileNameVersion("3asfasdf.migration.sql");
@@ -71,7 +71,7 @@ X is the version number and name can be anything you want.")
 				.And.ErrorLevel.Should().Be(1);
 		}
 
-		[TestMethod]
+		[Test]
 		public void BadSectionNameShouldTerminateWithFriendlyMessage()
 		{
 			Parsing(MigrationWithBadSectionName, ValidFileName)
@@ -93,7 +93,7 @@ The only required sections are apply and unapply.")
 				.And.ErrorLevel.Should().Be(1);
 		}
 
-		[TestMethod]
+		[Test]
 		public void DuplicateSectionShouldTerminateWithFriendlyMessage()
 		{
 			Parsing(MigrationWithDuplicateSection, ValidFileName)
@@ -115,7 +115,7 @@ The only required sections are apply and unapply.")
 				.And.ErrorLevel.Should().Be(1);
 		}
 
-		[TestMethod]
+		[Test]
 		public void UnparsableVersionNumberShouldThrowFriendlyErrorMessage()
 		{
 			Parsing(MigrationWithUnparsableVersionLine, ValidFileName)
@@ -137,7 +137,7 @@ contents before running a migration during development.")
 				.And.ErrorLevel.Should().Be(1);
 		}
 
-		[TestMethod]
+		[Test]
 		public void VersionNumberMismatchShouldTerminateWithFriendlyMessage()
 		{
 			var contentsFor3345 = _3B2_ExtractMigrationSpecFromFile.MigrationContentsForVersion(3345);
@@ -167,7 +167,7 @@ during development.")
 				.And.ErrorLevel.Should().Be(1);
 		}
 
-		[TestMethod]
+		[Test]
 		public void VersionShouldBeRequired()
 		{
 			Parsing(MigrationWithoutVersionNumber, ValidFileName)
@@ -187,7 +187,7 @@ contents before running a migration during development.")
 				.And.ErrorLevel.Should().Be(1);
 		}
 
-		[TestMethod]
+		[Test]
 		public void WrongSectionOrderShouldTerminateWithFriendlyMessage()
 		{
 			Parsing(MigrationInWrongOrder, ValidFileName)

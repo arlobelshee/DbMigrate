@@ -1,11 +1,11 @@
 ﻿using DbMigrate.Model;
 using DbMigrate.Model.Support.Database;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 {
-	[TestClass]
+	[TestFixture]
 	public class DatabaseAppliesAndUnappliesMigrations
 	{
 		private static readonly MigrationSpecification Migration2 = new MigrationSpecification(2, "2_something", "do 2",
@@ -17,7 +17,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		private static readonly MigrationSpecification MigrationEmpty = new MigrationSpecification(4, "4_something",
 			string.Empty, string.Empty);
 
-		[TestMethod]
+		[Test]
 		public void MemoryDatabaseShouldRecordMigrationsApplied()
 		{
 			var testSubject = new DatabaseLocalMemory();
@@ -26,7 +26,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 			testSubject.AppliedMigrations.Should().Equal(Migration2, Migration3);
 		}
 
-		[TestMethod]
+		[Test]
 		public void MemoryDatabaseShouldRecordMigrationsUnapplied()
 		{
 			var testSubject = new DatabaseLocalMemory();
@@ -35,7 +35,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 			testSubject.UnappliedMigrations.Should().Equal(Migration3, Migration2);
 		}
 
-		[TestMethod]
+		[Test]
 		public void RealDatabaseShouldApplyMigrationsByExecutingSql()
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
@@ -45,7 +45,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 			tranection.SqlExecuted.Should().Equal(new[] {Migration2.Apply, Migration3.Apply});
 		}
 
-		[TestMethod]
+		[Test]
 		public void RealDatabaseShouldNoOpToApplyMigrationsWhichDoNothingWhenApplied()
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
@@ -54,7 +54,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 			tranection.SqlExecuted.Should().BeEmpty();
 		}
 
-		[TestMethod]
+		[Test]
 		public void RealDatabaseShouldNoOpToUnapplyMigrationsWhichDoNothingWhenUnapplied()
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
@@ -63,7 +63,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 			tranection.SqlExecuted.Should().BeEmpty();
 		}
 
-		[TestMethod]
+		[Test]
 		public void RealDatabaseShouldUnapplyMigrationsByExecutingSql()
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();

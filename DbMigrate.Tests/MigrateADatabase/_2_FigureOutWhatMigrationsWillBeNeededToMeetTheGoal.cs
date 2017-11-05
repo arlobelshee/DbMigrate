@@ -2,11 +2,11 @@
 using DbMigrate.Model.Support;
 using DbMigrate.Tests.__UtilitiesForTesting;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.MigrateADatabase
 {
-	[TestClass]
+	[TestFixture]
 	public class _2_FigureOutWhatMigrationsWillBeNeededToMeetTheGoal
 	{
 		private static MigrationSet RequestMigrationBetween(int currentVersion, int? destinationVersion,
@@ -32,14 +32,14 @@ namespace DbMigrate.Tests.MigrateADatabase
 			return new ChangePlan(Do.Unapply, versions);
 		}
 
-		[TestMethod]
+		[Test]
 		public void DownwardRangeShouldUnapplyCorrectMigrations()
 		{
 			var result = RequestMigrationBetween(4, 2);
 			result.Plan.Should().Be(Unapply(4, 3));
 		}
 
-		[TestMethod]
+		[Test]
 		public void RangeWithNoUpperBoundShouldGoToLatestMigrationFound()
 		{
 			var migrationsAvailable = DefinedVersions(0, 1, 2, 3, 4, 7);
@@ -47,7 +47,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 			result.Plan.Should().Be(Apply(0, 1, 2, 3, 4, 5, 6, 7));
 		}
 
-		[TestMethod]
+		[Test]
 		public void RequestForNegativeVersionNumberShouldGoToThatManyFromTheEnd()
 		{
 			var migrationsAvailable = DefinedVersions(0, 1, 2, 3, 4);
@@ -55,14 +55,14 @@ namespace DbMigrate.Tests.MigrateADatabase
 			result.Plan.Should().Be(Apply(1, 2));
 		}
 
-		[TestMethod]
+		[Test]
 		public void RequestToGoToCurrentVersionShouldNoOp()
 		{
 			var result = RequestMigrationBetween(3, 3);
 			result.Plan.Should().Be(Apply());
 		}
 
-		[TestMethod]
+		[Test]
 		public void RequestToUndoTopMigrationShouldDoSo()
 		{
 			var migrationsAvailable = DefinedVersions(0, 1, 2, 3, 4);
@@ -70,7 +70,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 			result.Plan.Should().Be(Unapply(4, 3));
 		}
 
-		[TestMethod]
+		[Test]
 		public void UnapplyTooManyMigrationsShouldAlwaysGoToVersionZero()
 		{
 			var migrationsAvailable = DefinedVersions(0, 1, 2, 3, 4);
@@ -78,14 +78,14 @@ namespace DbMigrate.Tests.MigrateADatabase
 			result.Plan.Should().Be(Unapply(4, 3, 2, 1));
 		}
 
-		[TestMethod]
+		[Test]
 		public void UpwardRangeShouldBeAbleToStartWithDbHavingSomeMigrationsAlready()
 		{
 			var result = RequestMigrationBetween(2, 4);
 			result.Plan.Should().Be(Apply(3, 4));
 		}
 
-		[TestMethod]
+		[Test]
 		public void UpwardRangeShouldIncludeBothEndpoints()
 		{
 			var result = RequestMigrationBetween(-1, 3);

@@ -1,15 +1,15 @@
 ﻿using DbMigrate.Model.Support;
 using DbMigrate.Model.Support.Database;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 {
-	[TestClass]
+	[TestFixture]
 	public class DatabaseManageDbVersion
 	{
-		private const string RequestVersionSql =
-			@"if exists(select * from sys.objects where name = '__database_info' and type in ('U'))
+		private const string RequestVersionSql = @"
+if exists(select * from sys.objects where name = '__database_info' and type in ('U'))
 begin
 	select top 1 version_number from __database_info;
 end
@@ -27,7 +27,7 @@ insert into __database_info(version_number) values(0);";
 		private const string UpdateToVersion9Sql = "update __database_info set version_number = 9;";
 		private const string DropVersionInfoTableSql = "drop table __database_info;";
 
-		[TestMethod]
+		[Test]
 		public void DatabaseShouldKnowItsCurrentVersion()
 		{
 			var tracer = new TrannectionTraceOnly();
@@ -41,7 +41,7 @@ insert into __database_info(version_number) values(0);";
 			testSubject.CurrentVersion.Result.Should().Be(6);
 		}
 
-		[TestMethod]
+		[Test]
 		public void DatabaseSimulatorShouldBeAbleToSetItsVersion()
 		{
 			var testSubject = new DatabaseLocalMemory();
@@ -49,14 +49,14 @@ insert into __database_info(version_number) values(0);";
 			testSubject.CurrentVersion.Result.Should().Be(33);
 		}
 
-		[TestMethod]
+		[Test]
 		public void DatabaseSimulatorShouldStartVersionUnaware()
 		{
 			var testSubject = new DatabaseLocalMemory();
 			testSubject.CurrentVersion.Result.Should().Be(-1);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ShouldBeAbleToGoToNewVersion()
 		{
 			var tracer = new TrannectionTraceOnly();
@@ -72,7 +72,7 @@ insert into __database_info(version_number) values(0);";
 			hasBeenCalled.Should().BeTrue();
 		}
 
-		[TestMethod]
+		[Test]
 		public void SpecialMigrationShouldKnowHowToApply()
 		{
 			var testSubject = new MigrationRepoMakeDbVersionAware().LoadMigrationIfPresent(0);

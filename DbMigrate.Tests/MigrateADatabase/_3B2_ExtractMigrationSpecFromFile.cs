@@ -2,11 +2,11 @@
 using DbMigrate.Model;
 using DbMigrate.Model.Support.FileFormat;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.MigrateADatabase
 {
-	[TestClass]
+	[TestFixture]
 	public class _3B2_ExtractMigrationSpecFromFile
 	{
 		private const string ValidFileName = "3345_some_migration_name.migration.sql";
@@ -40,42 +40,42 @@ drop table Foo;
 					version);
 		}
 
-		[TestMethod]
+		[Test]
 		public void LoadingFileShouldFindDowngradeScript()
 		{
 			var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
 			testSubject.Unapply.Should().Be("drop table Foo;");
 		}
 
-		[TestMethod]
+		[Test]
 		public void LoadingFileShouldFindMigrationVersionNumber()
 		{
 			var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
 			testSubject.Version.Should().Be(3345);
 		}
 
-		[TestMethod]
+		[Test]
 		public void LoadingFileShouldFindSectionToAddTestData()
 		{
 			var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
 			testSubject.InsertTestData.Should().Be("insert into Foo;");
 		}
 
-		[TestMethod]
+		[Test]
 		public void LoadingFileShouldFindSectionToDeleteTestData()
 		{
 			var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
 			testSubject.DeleteTestData.Should().Be("delete from Foo;");
 		}
 
-		[TestMethod]
+		[Test]
 		public void LoadingFileShouldFindUpgradeScript()
 		{
 			var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
 			testSubject.Apply.Should().Be("create table Foo;");
 		}
 
-		[TestMethod]
+		[Test]
 		public void ShouldKnowHowToGetVersionNumberFromFileName()
 		{
 			MigrationFile.FileNameVersion("3_asfasdf.migration.sql").Should().Be(3);

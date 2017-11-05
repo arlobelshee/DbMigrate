@@ -3,14 +3,14 @@ using DbMigrate.Model.Support;
 using DbMigrate.Model.Support.Filesystem;
 using DbMigrate.UI;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.MigrateADatabase
 {
-	[TestClass]
+	[TestFixture]
 	public class _3_LocateAllDefinedMigrations
 	{
-		[TestMethod]
+		[Test]
 		public void MigrationSetShouldFindMigrationsFromDiskAndSpecialZeroMigrationLoader()
 		{
 			const string dirName = "c:\\";
@@ -21,7 +21,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 				new MigrationRepoMakeDbVersionAware());
 		}
 
-		[TestMethod]
+		[Test]
 		public void MigrationSetShouldGiveGoodErrorWhenGivenInvalidDirectory()
 		{
 			const string dirName = @"c:\directory\that\does\not\exist";

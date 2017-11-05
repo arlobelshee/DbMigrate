@@ -5,13 +5,26 @@ using DbMigrate.Model.Support.Database;
 using DbMigrate.Tests.__UtilitiesForTesting;
 using DbMigrate.UI;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.LetUserSeeProgress
 {
-	[TestClass]
+	[TestFixture]
 	public class NotiyUserOfProgress
 	{
+		[TearDown]
+		public void CleanUp()
+		{
+			User.ClearNotify();
+		}
+
+		[SetUp]
+		public void SetUp()
+		{
+			_messagesSentToUser = new List<string>();
+			User.OnNotify += _messagesSentToUser.Add;
+		}
+
 		public static object[][] VersionPlanCases =
 		{
 			new object[] {2, 4, "Migrating database from version 2 to version 4."},
@@ -25,19 +38,6 @@ namespace DbMigrate.Tests.LetUserSeeProgress
 		private List<string> _messagesSentToUser;
 		public TestContext TestContext { get; set; }
 
-		[TestCleanup]
-		public void CleanUp()
-		{
-			User.ClearNotify();
-		}
-
-		[TestInitialize]
-		public void SetUp()
-		{
-			_messagesSentToUser = new List<string>();
-			User.OnNotify += _messagesSentToUser.Add;
-		}
-
 		private static void PlanToGoBetweenVersions(int currentVersion, int? targetVersion)
 		{
 			var databaseLocalMemory = new DatabaseLocalMemory();
@@ -45,7 +45,7 @@ namespace DbMigrate.Tests.LetUserSeeProgress
 				TestData.Migrations(3, 4, 5).ToLoaders());
 		}
 
-		[TestMethod]
+		[Test]
 		public void ApplyingMigrationShouldNotifyUser()
 		{
 			var testSubject = new ChangePlan(Do.Apply, new[] {3, 4});
@@ -58,22 +58,19 @@ namespace DbMigrate.Tests.LetUserSeeProgress
 			});
 		}
 
-		[TestMethod]
-		[TestCaseSource("VersionPlanCases")]
-		public void ShouldExpressCorrectPlanToUser()
+		[Test]
+		[TestCaseSource(nameof(VersionPlanCases))]
+		public void ShouldExpressCorrectPlanToUser(int currentVersion, int? targetVersion, string userMessage)
 		{
-			TestContext.Run((int currentVersion, int? targetVersion, string userMessage) =>
-			{
-				PlanToGoBetweenVersions(currentVersion, targetVersion);
+			PlanToGoBetweenVersions(currentVersion, targetVersion);
 
-				_messagesSentToUser.Should().ContainInOrder(new[]
-				{
-					userMessage
-				});
+			_messagesSentToUser.Should().ContainInOrder(new[]
+			{
+				userMessage
 			});
 		}
 
-		[TestMethod]
+		[Test]
 		public void UnapplyingMigrationShouldNotifyUser()
 		{
 			var testSubject = new ChangePlan(Do.Unapply, new[] {5, 4});

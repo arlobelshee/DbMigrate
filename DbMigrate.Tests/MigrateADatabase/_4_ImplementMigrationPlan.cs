@@ -7,17 +7,17 @@ using DbMigrate.Model.Support.Database;
 using DbMigrate.Tests.__UtilitiesForTesting;
 using DbMigrate.UI;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.MigrateADatabase
 {
-	[TestClass]
+	[TestFixture]
 	public class _4_ImplementMigrationPlan
 	{
 		private DatabaseLocalMemory _database;
 		private MigrationSpecification[] _definedMigrations;
 
-		[TestInitialize]
+		[SetUp]
 		public void Setup()
 		{
 			_database = new DatabaseLocalMemory();
@@ -31,7 +31,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 			return versionNumbers.Select(n => migrations.First(m => m.Version == n));
 		}
 
-		[TestMethod]
+		[Test]
 		public void ApplyingNoMigrationsShouldDoNothing()
 		{
 			var testSubject = new ChangePlan(Do.Apply, new int[] { });
@@ -40,7 +40,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 			_database.CommittedTheChanges.Should().BeFalse();
 		}
 
-		[TestMethod]
+		[Test]
 		public void PlanToApplyShouldLoadCorrectMigrationsAndApplyThemAgainstTheDatabase()
 		{
 			var testSubject = new ChangePlan(Do.Apply, new[] {2, 3});
@@ -48,7 +48,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 			_database.AppliedMigrations.Should().ContainInOrder(MigrationsForVersions(_definedMigrations, 2, 3));
 		}
 
-		[TestMethod]
+		[Test]
 		public void PlanToApplyShouldSetDatabaseVersionToLastMigrationApplied()
 		{
 			var testSubject = new ChangePlan(Do.Apply, new[] {2, 3});
@@ -56,7 +56,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 			_database.CurrentVersion.Result.Should().Be(3);
 		}
 
-		[TestMethod]
+		[Test]
 		public void PlanToUnapplyShouldLoadCorrectMigrationsAndUnapplyThemAgainstTheDatabase()
 		{
 			var testSubject = new ChangePlan(Do.Unapply, new[] {4, 3});
@@ -64,7 +64,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 			_database.UnappliedMigrations.Should().ContainInOrder(MigrationsForVersions(_definedMigrations, 4, 3));
 		}
 
-		[TestMethod]
+		[Test]
 		public void PlanToUnapplyShouldSetDatabaseVersionToOneLessThanLastMigrationUnapplied()
 		{
 			var testSubject = new ChangePlan(Do.Unapply, new[] {4, 3});
@@ -72,7 +72,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 			_database.CurrentVersion.Result.Should().Be(2);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ShouldCommitAllChangesToTheDatabase()
 		{
 			var testSubject = new ChangePlan(Do.Unapply, new[] {4, 3});
@@ -80,7 +80,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 			_database.CommittedTheChanges.Should().BeTrue();
 		}
 
-		[TestMethod]
+		[Test]
 		public void ShouldGiveGoodErrorWhenAttemptToApplyUndefinedMigration()
 		{
 			var testSubject = new ChangePlan(Do.Unapply, new[] {19});

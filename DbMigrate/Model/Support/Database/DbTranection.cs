@@ -7,15 +7,14 @@ namespace DbMigrate.Model.Support.Database
 {
 	public class DbTranection : ITranection
 	{
-		private const string SqlLiteProvider = "System.Data.SQLite";
 		private DbConnection _connection;
 		private DbTransaction _transaction;
 		private readonly DbEngine _dbEngine;
 
-		public DbTranection(string connectionString)
+		public DbTranection(DbEngine engine, string connectionString)
 		{
 			ConnectionString = connectionString + "Asynchronous Processing=True;MultipleActiveResultSets=true;";
-			_dbEngine = DbEngine.SqlServer;
+			_dbEngine = engine;
 		}
 
 		public void Dispose()

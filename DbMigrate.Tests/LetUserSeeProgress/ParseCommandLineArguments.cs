@@ -2,56 +2,56 @@
 using System.Linq;
 using DbMigrate.UI;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.LetUserSeeProgress
 {
-	[TestClass]
+	[TestFixture]
 	public class ParseCommandLineArguments
 	{
-		[TestMethod]
+		[Test]
 		public void EmptyCommandLineShouldRejectAndShowHelp()
 		{
 			CommandLine()
 				.ShouldThrow<TerminateAndShowHelp>();
 		}
 
-		[TestMethod]
+		[Test]
 		public void RequestingHelpShouldShowHelp()
 		{
 			CommandLine("--help")
 				.ShouldThrow<TerminateAndShowHelp>();
 		}
 
-		[TestMethod]
+		[Test]
 		public void EmptyMigrationFolderShouldShowHelp()
 		{
 			CommandLine("--migrations", "--connectionstring", "valid_value")
 				.ShouldThrow<TerminateAndShowHelp>();
 		}
 
-		[TestMethod]
+		[Test]
 		public void MissingMigrationFolderShouldShowHelp()
 		{
 			CommandLine("--connectionstring", "valid_value")
 				.ShouldThrow<TerminateAndShowHelp>();
 		}
 
-		[TestMethod]
+		[Test]
 		public void EmptyConnectionStringShouldShowHelp()
 		{
 			CommandLine("--migrations", "asfed", "--connectionstring")
 				.ShouldThrow<TerminateAndShowHelp>();
 		}
 
-		[TestMethod]
+		[Test]
 		public void MissingConnectionStringShouldShowHelp()
 		{
 			CommandLine("--migrations", "valid_value")
 				.ShouldThrow<TerminateAndShowHelp>();
 		}
 
-		[TestMethod]
+		[Test]
 		public void ShouldFindMigrationAndConnectionString()
 		{
 			var parameters = ParseCommandLine("migration_folder", "the_connection_string");
@@ -59,21 +59,21 @@ namespace DbMigrate.Tests.LetUserSeeProgress
 			parameters.ConnectionString.Should().Be("the_connection_string");
 		}
 
-		[TestMethod]
+		[Test]
 		public void MissingTargetVersionShouldDefaultToNull()
 		{
 			var parameters = ParseCommandLine("ignore", "ignore");
 			parameters.TargetVersion.Should().Be(null);
 		}
 
-		[TestMethod]
+		[Test]
 		public void TargetVersionShouldBeReadIfPresent()
 		{
 			var parameters = ParseCommandLine("ignore", "ignore", "--targetversion", "3");
 			parameters.TargetVersion.Should().Be(3);
 		}
 
-		[TestMethod]
+		[Test]
 		public void NegativeTargetVersionShouldBeAllowed()
 		{
 			var parameters = ParseCommandLine("ignore", "ignore", "--targetversion", "-9");

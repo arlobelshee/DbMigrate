@@ -1,13 +1,13 @@
 ﻿using DbMigrate.Model.Support;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.MigrateADatabase
 {
-	[TestClass]
+	[TestFixture]
 	public class _3A_LocateMigrationToMakeDatabaseVersionAware
 	{
-		[TestMethod]
+		[Test]
 		public void SpecialZeroLoaderShouldAlwaysFindTheOneMagicMigration()
 		{
 			var testSubject = new MigrationRepoMakeDbVersionAware();

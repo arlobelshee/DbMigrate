@@ -1,16 +1,12 @@
 ﻿using System;
 using DbMigrate.Model.Support.Database;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 {
-	[TestClass]
-	public class ExecuteSqlAgainstADatabase
+	public abstract class ExecuteSqlAgainstADatabase
 	{
-		private const string LocalMasterDb = "Server=.\\SQLEXPRESS;Database=master;Trusted_Connection=True;";
-		private const string LocalSQLiteDb = "Provider=sqlite;Data Source=:memory:;Version=3;New=true;";
-
 		private const string CreateJunkTable =
 			@"CREATE TABLE some_junk_table{0} (
     Id [int] IDENTITY(1,1) NOT NULL,
@@ -26,9 +22,11 @@ drop table some_junk_table{0};";
 		private const string CountJunkTables = "select COUNT(*) from sys.objects o where o.name = 'some_junk_table{0}';";
 
 		private string _tableUid;
+		protected string ConnectionStringToUse;
+		protected DbEngine DbToUse;
 
-		[TestInitialize]
-		public void Init()
+		[SetUp]
+		public void CommonInit()
 		{
 			_tableUid = Guid.NewGuid().ToString("N");
 		}
@@ -51,25 +49,25 @@ drop table some_junk_table{0};";
 				.Wait();
 		}
 
-		[TestMethod]
+		[Test]
 		public void SqlTrannectionShouldBeCommittable()
 		{
 			try
 			{
-				using (var testSubject = new DbTranection(LocalMasterDb))
+				using (var testSubject = new DbTranection(DbToUse, ConnectionStringToUse))
 				{
 					MakeJunkTable(testSubject);
 					NumJunkTablesShouldBe(testSubject, 1);
 					testSubject.Commit();
 				}
-				using (var testSubject = new DbTranection(LocalMasterDb))
+				using (var testSubject = new DbTranection(DbToUse, ConnectionStringToUse))
 				{
 					NumJunkTablesShouldBe(testSubject, 1);
 				}
 			}
 			finally
 			{
-				using (var testSubject = new DbTranection(LocalMasterDb))
+				using (var testSubject = new DbTranection(DbToUse, ConnectionStringToUse))
 				{
 					RemoveJunkTable(testSubject);
 					testSubject.Commit();
@@ -77,10 +75,10 @@ drop table some_junk_table{0};";
 			}
 		}
 
-		[TestMethod]
+		[Test]
 		public void SqlTrannectionShouldCloseItsConnectionWhenItIsDisposed()
 		{
-			using (var testSubject = new DbTranection(LocalMasterDb))
+			using (var testSubject = new DbTranection(DbToUse, ConnectionStringToUse))
 			{
 				testSubject.IsOpen.Should().BeFalse();
 				testSubject.ExecuteScalar<int>("select count(*) from sys.objects;").Result.Should().BeGreaterThan(10);
@@ -90,10 +88,10 @@ drop table some_junk_table{0};";
 			}
 		}
 
-		[TestMethod]
+		[Test]
 		public void SqlTrannectionShouldExecuteNonQuery()
 		{
-			using (var testSubject = new DbTranection(LocalMasterDb))
+			using (var testSubject = new DbTranection(DbToUse, ConnectionStringToUse))
 			{
 				testSubject.ExecuteNonQuery(string.Format(CreateJunkTable, _tableUid))
 					.Wait();
@@ -102,27 +100,50 @@ drop table some_junk_table{0};";
 			}
 		}
 
-		[TestMethod]
+		[Test]
 		public void SqlTrannectionShouldExecuteSqlOnItsTarget()
 		{
-			using (var testSubject = new DbTranection(LocalMasterDb))
+			using (var testSubject = new DbTranection(DbToUse, ConnectionStringToUse))
 			{
 				testSubject.ExecuteScalar<int>("select count(*) from sys.objects;").Result.Should().BeGreaterThan(10);
 			}
 		}
 
-		[TestMethod]
+		[Test]
 		public void SqlTrannectionShouldRollbackUnlessInstructedOtherwise()
 		{
-			using (var testSubject = new DbTranection(LocalMasterDb))
+			using (var testSubject = new DbTranection(DbToUse, ConnectionStringToUse))
 			{
 				MakeJunkTable(testSubject);
 				NumJunkTablesShouldBe(testSubject, 1);
 			}
-			using (var testSubject = new DbTranection(LocalMasterDb))
+			using (var testSubject = new DbTranection(DbToUse, ConnectionStringToUse))
 			{
 				NumJunkTablesShouldBe(testSubject, 0);
 			}
+		}
+	}
+
+	[TestFixture]
+	public class ExecuteSqlAgainstSqlLite : ExecuteSqlAgainstADatabase
+	{
+		[SetUp]
+		public void Init()
+		{
+			DbToUse = DbEngine.SqlLite;
+			ConnectionStringToUse = "Data Source=:memory:;Version=3;New=true;";
+		}
+	}
+
+	[TestFixture]
+	[Ignore("Turn on if you have Sql Server Express installed locally.")]
+	public class ExecuteSqlAgainstSqlServer : ExecuteSqlAgainstADatabase
+	{
+		[SetUp]
+		public void Init()
+		{
+			DbToUse = DbEngine.SqlServer;
+			ConnectionStringToUse = "Server=.\\SQLEXPRESS;Database=master;Trusted_Connection=True;";
 		}
 	}
 }

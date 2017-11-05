@@ -1,11 +1,11 @@
 ﻿using DbMigrate.Model;
 using DbMigrate.Model.Support.Database;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 {
-	[TestClass]
+	[TestFixture]
 	public class ConnectToADatabase
 	{
 		private static string ExpectedConnectionString(string baseConnectionString)
@@ -13,7 +13,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 			return baseConnectionString + "Asynchronous Processing=True;MultipleActiveResultSets=true;";
 		}
 
-		[TestMethod]
+		[Test]
 		public void DatabaseShouldCommitItsTranection()
 		{
 			var tracer = new TrannectionTraceOnly();
@@ -22,7 +22,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 			tracer.IsCommitted.Should().BeTrue();
 		}
 
-		[TestMethod]
+		[Test]
 		public void DatabaseShouldCreateATranection()
 		{
 			const string connectionString = "some fake connection string;";
@@ -33,7 +33,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 				.EqualTo(new {IsOpen = false, ConnectionString = ExpectedConnectionString(connectionString)});
 		}
 
-		[TestMethod]
+		[Test]
 		public void DatabaseShouldDisposeItsTranection()
 		{
 			var tracer = new TrannectionTraceOnly();
@@ -42,7 +42,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 			tracer.IsDisposed.Should().BeTrue();
 		}
 
-		[TestMethod]
+		[Test]
 		public void TargetShouldCreateADatabase()
 		{
 			const string connectionString = "some fake connection string;";
@@ -54,7 +54,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 			testSubject.Database.IsTestDatabase.Should().BeFalse();
 		}
 
-		[TestMethod]
+		[Test]
 		public void TargetShouldConnectToNonProductionDatabasesCorrectly()
 		{
 			const string connectionString = "some fake connection string;";
@@ -63,7 +63,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 			testSubject.Database.IsTestDatabase.Should().BeTrue();
 		}
 
-		[TestMethod]
+		[Test]
 		public void TargetShouldDisposeItsDatabase()
 		{
 			var tracer = new DatabaseLocalMemory();
