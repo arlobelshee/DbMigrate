@@ -1,22 +1,22 @@
 ﻿namespace DbMigrate.Model
 {
-    public class MigrationSet
-    {
-        private readonly IDatabase _database;
+	public class MigrationSet
+	{
+		private readonly IDatabase _database;
 
-        public MigrationSet(ChangePlan plan, IDatabase database, params IMigrationLoader[] loaders)
-        {
-            this.Plan = plan;
-            this.Loaders = loaders;
-            this._database = database;
-        }
+		public MigrationSet(ChangePlan plan, IDatabase database, params IMigrationLoader[] loaders)
+		{
+			Plan = plan;
+			Loaders = loaders;
+			_database = database;
+		}
 
-        public IMigrationLoader[] Loaders { get; private set; }
-        public ChangePlan Plan { get; private set; }
+		public IMigrationLoader[] Loaders { get; }
+		public ChangePlan Plan { get; }
 
-        public void ExecuteAll()
-        {
-            this.Plan.ApplyTo(this._database, this.Loaders);
-        }
-    }
+		public void ExecuteAll()
+		{
+			Plan.ApplyTo(_database, Loaders);
+		}
+	}
 }

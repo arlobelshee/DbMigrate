@@ -1,23 +1,22 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using DbMigrate.Model;
 using DbMigrate.Model.Support.FileFormat;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.MigrateADatabase
 {
-    [TestClass]
-    public class _3B2_ExtractMigrationSpecFromFile
-    {
-        private static readonly string TrivialMigration = MigrationContentsForVersion(3345);
-        private const string ValidFileName = "3345_some_migration_name.migration.sql";
+	[TestFixture]
+	public class _3B2_ExtractMigrationSpecFromFile
+	{
+		private const string ValidFileName = "3345_some_migration_name.migration.sql";
+		private static readonly string TrivialMigration = MigrationContentsForVersion(3345);
 
-        public static string MigrationContentsForVersion(int version)
-        {
-            return
-                String.Format(
-                    @"
+		public static string MigrationContentsForVersion(int version)
+		{
+			return
+				string.Format(
+					@"
 -- Migration version: {0}
 -- Full-line comments outside of sections should be ignored
 
@@ -38,48 +37,48 @@ delete from Foo;
 
 drop table Foo;
 ",
-                    version);
-        }
+					version);
+		}
 
-        [TestMethod]
-        public void LoadingFileShouldFindDowngradeScript()
-        {
-            var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
-            testSubject.Unapply.Should().Be("drop table Foo;");
-        }
+		[Test]
+		public void LoadingFileShouldFindDowngradeScript()
+		{
+			var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
+			testSubject.Unapply.Should().Be("drop table Foo;");
+		}
 
-        [TestMethod]
-        public void LoadingFileShouldFindMigrationVersionNumber()
-        {
-            var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
-            testSubject.Version.Should().Be(3345);
-        }
+		[Test]
+		public void LoadingFileShouldFindMigrationVersionNumber()
+		{
+			var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
+			testSubject.Version.Should().Be(3345);
+		}
 
-        [TestMethod]
-        public void LoadingFileShouldFindSectionToAddTestData()
-        {
-            var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
-            testSubject.InsertTestData.Should().Be("insert into Foo;");
-        }
+		[Test]
+		public void LoadingFileShouldFindSectionToAddTestData()
+		{
+			var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
+			testSubject.InsertTestData.Should().Be("insert into Foo;");
+		}
 
-        [TestMethod]
-        public void LoadingFileShouldFindSectionToDeleteTestData()
-        {
-            var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
-            testSubject.DeleteTestData.Should().Be("delete from Foo;");
-        }
+		[Test]
+		public void LoadingFileShouldFindSectionToDeleteTestData()
+		{
+			var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
+			testSubject.DeleteTestData.Should().Be("delete from Foo;");
+		}
 
-        [TestMethod]
-        public void LoadingFileShouldFindUpgradeScript()
-        {
-            var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
-            testSubject.Apply.Should().Be("create table Foo;");
-        }
+		[Test]
+		public void LoadingFileShouldFindUpgradeScript()
+		{
+			var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
+			testSubject.Apply.Should().Be("create table Foo;");
+		}
 
-        [TestMethod]
-        public void ShouldKnowHowToGetVersionNumberFromFileName()
-        {
-            MigrationFile.FileNameVersion("3_asfasdf.migration.sql").Should().Be(3);
-        }
-    }
+		[Test]
+		public void ShouldKnowHowToGetVersionNumberFromFileName()
+		{
+			MigrationFile.FileNameVersion("3_asfasdf.migration.sql").Should().Be(3);
+		}
+	}
 }

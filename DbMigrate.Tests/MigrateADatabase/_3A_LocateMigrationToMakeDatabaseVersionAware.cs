@@ -1,18 +1,18 @@
 ﻿using DbMigrate.Model.Support;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbMigrate.Tests.MigrateADatabase
 {
-    [TestClass]
-    public class _3A_LocateMigrationToMakeDatabaseVersionAware
-    {
-        [TestMethod]
-        public void SpecialZeroLoaderShouldAlwaysFindTheOneMagicMigration()
-        {
-            var testSubject = new MigrationRepoMakeDbVersionAware();
-            testSubject.MaxMigrationVersionFound.Should().Be(0);
-            testSubject.LoadMigrationIfPresent(0).Should().NotBeNull();
-        }
-    }
+	[TestFixture]
+	public class _3A_LocateMigrationToMakeDatabaseVersionAware
+	{
+		[Test]
+		public void SpecialZeroLoaderShouldAlwaysFindTheOneMagicMigration()
+		{
+			var testSubject = new MigrationRepoMakeDbVersionAware();
+			testSubject.MaxMigrationVersionFound.Should().Be(0);
+			testSubject.LoadMigrationIfPresent(0).Should().NotBeNull();
+		}
+	}
 }

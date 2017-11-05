@@ -1,0 +1,8 @@
+﻿<ProjectConfiguration>
+  <Settings>
+    <DefaultTestTimeout>2000</DefaultTestTimeout>
+    <FrameworkUtilisationTypeForNUnit2>UseStaticAnalysis</FrameworkUtilisationTypeForNUnit2>
+    <PreloadReferencedAssemblies>True</PreloadReferencedAssemblies>
+    <PreviouslyBuiltSuccessfully>True</PreviouslyBuiltSuccessfully>
+  </Settings>
+</ProjectConfiguration>
