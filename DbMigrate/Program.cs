@@ -13,9 +13,9 @@ namespace DbMigrate
 		{
 			try
 			{
-				var args = ParseCommandLine(commandLine);
 				User.OnNotify += Console.WriteLine;
-				using (var db = new Target(DbEngine.SqlServer, args.ConnectionString, args.IsTestDatabase))
+				var args = ParseCommandLine(commandLine);
+				using (var db = new Target(args.ResolvedEngine, args.ConnectionString, args.IsTestDatabase))
 				{
 					Console.WriteLine();
 					db.MigrateTo(args.TargetVersion)

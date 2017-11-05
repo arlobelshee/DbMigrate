@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Args;
+using DbMigrate.Model.Support.Database;
 
 namespace DbMigrate.UI
 {
@@ -9,6 +10,7 @@ namespace DbMigrate.UI
 	{
 		[Description("The database engine to work with. (required)")]
 		public string Engine { get; set; }
+		public DbEngine ResolvedEngine { get; private set; }
 
 		[Description("The database to migrate. (required)")]
 		public string ConnectionString { get; set; }
@@ -32,6 +34,7 @@ namespace DbMigrate.UI
 			if (Help || string.IsNullOrEmpty(Engine) || string.IsNullOrEmpty(ConnectionString) ||
 			    string.IsNullOrEmpty(Migrations))
 				throw new TerminateAndShowHelp(commandLineParser);
+			ResolvedEngine = DbEngine.LookUpByName(Engine);
 		}
 	}
 }

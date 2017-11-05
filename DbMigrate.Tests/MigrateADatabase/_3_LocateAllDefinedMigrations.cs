@@ -33,7 +33,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 
 You said migrations were in 'c:\directory\that\does\not\exist'.
 However, I could not find that directory.")
-				.And.ErrorLevel.Should().Be(1);
+				.And.ErrorLevel.Should().Be(2);
 		}
 	}
 }

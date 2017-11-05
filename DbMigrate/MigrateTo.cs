@@ -57,9 +57,9 @@ namespace DbMigrate
 		{
 			try
 			{
-				Validate();
 				User.OnNotify += message => Log.LogMessage(message);
-				using (var db = new Target(DbEngine.SqlServer, ConnectionString, IsTestDatabase))
+				Validate();
+				using (var db = new Target(_args.ResolvedEngine, ConnectionString, IsTestDatabase))
 				{
 					db.MigrateTo(TargetVersion)
 						.UsingMigrationsFrom(MigrationFolderName)

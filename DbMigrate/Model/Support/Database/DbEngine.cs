@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data.SQLite;
+using DbMigrate.UI;
 
 namespace DbMigrate.Model.Support.Database
 {
@@ -23,10 +25,16 @@ else -1
 end", typeof(SQLiteCommand));
 
 		public static DbEngine None = new DbEngine("", null, null);
+		private static readonly Dictionary<string, DbEngine> KnownEngines;
 
 		private readonly Type _arbitraryTypeReferenceToEnsureLibraryIsReferencedAndCopied;
 		public readonly string ProviderFactoryName;
 		public readonly string RequestVersionSql;
+
+		static DbEngine()
+		{
+			KnownEngines = new Dictionary<string, DbEngine> {{"sqlite", SqlLite}, {"sqlserver", SqlServer}};
+		}
 
 		private DbEngine(string providerFactoryName, string requestVersionSql,
 			Type arbitraryTypeReferenceToEnsureLibraryIsReferencedAndCopied)
@@ -35,6 +43,18 @@ end", typeof(SQLiteCommand));
 			RequestVersionSql = requestVersionSql;
 			_arbitraryTypeReferenceToEnsureLibraryIsReferencedAndCopied =
 				arbitraryTypeReferenceToEnsureLibraryIsReferencedAndCopied;
+		}
+
+		public static string KnownEngineNames =>
+			string.Join(", ", KnownEngines.Keys);
+
+		public static DbEngine LookUpByName(string name)
+		{
+			if (!KnownEngines.ContainsKey(name.ToLower()))
+				throw new TerminateProgramWithMessageException(
+					$"I don't know the database engine '{name}'. I only understand how to communicate with {KnownEngineNames}. Please extend me if you want to use that engine.",
+					3);
+			return KnownEngines[name];
 		}
 	}
 }

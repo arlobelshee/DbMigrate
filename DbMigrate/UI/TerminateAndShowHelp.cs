@@ -9,7 +9,7 @@ namespace DbMigrate.UI
 	public class TerminateAndShowHelp : TerminateProgramWithMessageException
 	{
 		public TerminateAndShowHelp(IModelBindingDefinition<MigrationParameters> helpMessage)
-			: base(FormatHelp(helpMessage), 0)
+			: base(FormatHelp(helpMessage), 1)
 		{
 		}
 

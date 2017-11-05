@@ -30,7 +30,7 @@ namespace DbMigrate.Model
 			{
 				throw new TerminateProgramWithMessageException(
 					string.Format(UserMessage.ErrorMissingMigrationDirectory, migrationFolder),
-					1);
+					2);
 			}
 		}
 

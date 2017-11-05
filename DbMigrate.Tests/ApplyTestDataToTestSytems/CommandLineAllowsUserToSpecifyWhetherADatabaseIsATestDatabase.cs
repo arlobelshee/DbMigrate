@@ -1,5 +1,4 @@
-﻿using DbMigrate.Tests.LetUserSeeProgress;
-using DbMigrate.Tests.UnderstandWhatUserWantsToDo;
+﻿using DbMigrate.Tests.UnderstandWhatUserWantsToDo;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -11,14 +10,14 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
 		[Test]
 		public void IsTestDatabaseShouldDefaultToFalse()
 		{
-			var parameters = ParseCommandLineArguments.ParseCommandLine("ignore", "ignore", "ignore");
+			var parameters = ParseCommandLineArguments.ParseCommandLine("ignore", "ignore", "sqlite");
 			parameters.IsTestDatabase.Should().BeFalse();
 		}
 
 		[Test]
 		public void ShouldNoticeThisIsATestDatabaseWhenSwitchIsPresent()
 		{
-			var parameters = ParseCommandLineArguments.ParseCommandLine("ignore", "ignore", "ignore", "--istestdatabase");
+			var parameters = ParseCommandLineArguments.ParseCommandLine("ignore", "ignore", "sqlite", "--istestdatabase");
 			parameters.IsTestDatabase.Should().BeTrue();
 		}
 	}
