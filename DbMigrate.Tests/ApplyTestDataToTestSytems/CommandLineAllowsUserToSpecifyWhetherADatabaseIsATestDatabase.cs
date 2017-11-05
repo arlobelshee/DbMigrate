@@ -10,14 +10,14 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
 		[Test]
 		public void IsTestDatabaseShouldDefaultToFalse()
 		{
-			var parameters = ParseCommandLineArguments.ParseCommandLine("ignore", "ignore");
+			var parameters = ParseCommandLineArguments.ParseCommandLine("ignore", "ignore", "ignore");
 			parameters.IsTestDatabase.Should().BeFalse();
 		}
 
 		[Test]
 		public void ShouldNoticeThisIsATestDatabaseWhenSwitchIsPresent()
 		{
-			var parameters = ParseCommandLineArguments.ParseCommandLine("ignore", "ignore", "--istestdatabase");
+			var parameters = ParseCommandLineArguments.ParseCommandLine("ignore", "ignore", "ignore", "--istestdatabase");
 			parameters.IsTestDatabase.Should().BeTrue();
 		}
 	}

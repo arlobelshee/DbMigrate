@@ -7,6 +7,9 @@ namespace DbMigrate.UI
 	[Description("Migrates the target database from its current version to a target version.")]
 	public class MigrationParameters
 	{
+		[Description("The database engine to work with. (required)")]
+		public string Engine { get; set; }
+
 		[Description("The database to migrate. (required)")]
 		public string ConnectionString { get; set; }
 
