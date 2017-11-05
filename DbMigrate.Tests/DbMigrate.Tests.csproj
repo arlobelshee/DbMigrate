@@ -41,6 +41,8 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -52,7 +54,7 @@
   <ItemGroup>
     <Compile Include="ApplyTestDataToTestSytems\CommandLineAllowsUserToSpecifyWhetherADatabaseIsATestDatabase.cs" />
     <Compile Include="ApplyTestDataToTestSytems\DatabaseAppliesTestDataFromMigrationsWhenToldToDoSo.cs" />
-    <Compile Include="LetUserSeeProgress\ParseCommandLineArguments.cs" />
+    <Compile Include="UnderstandWhatUserWantsToDo\ParseCommandLineArguments.cs" />
     <Compile Include="MigrateADatabase\_2_FigureOutWhatMigrationsWillBeNeededToMeetTheGoal.cs" />
     <Compile Include="MigrateADatabase\_1_PickTheGoal.cs" />
     <Compile Include="CommonInfrastructureForAllMmfs\ConnectToADatabase.cs" />
@@ -67,6 +69,7 @@
     <Compile Include="MigrateADatabase\_3B1_ValidateMigrationSpecifications.cs" />
     <Compile Include="LetUserSeeProgress\NotiyUserOfProgress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnderstandWhatUserWantsToDo\UnderstandBsBuildTaskApiInvocation.cs" />
     <Compile Include="__UtilitiesForTesting\TestData.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -47,16 +47,17 @@ namespace DbMigrate
 		public static MigrationParameters ParseCommandLine(IEnumerable<string> commandLine)
 		{
 			var commandLineParser = Configuration.Configure<MigrationParameters>();
+			MigrationParameters args;
 			try
 			{
-				var args = commandLineParser.CreateAndBind(commandLine);
-				Require.Not(args.Help || string.IsNullOrEmpty(args.Engine) || string.IsNullOrEmpty(args.ConnectionString) || string.IsNullOrEmpty(args.Migrations));
-				return args;
+				args = commandLineParser.CreateAndBind(commandLine);
 			}
 			catch (Exception)
 			{
 				throw new TerminateAndShowHelp(commandLineParser);
 			}
+			args.Validate(commandLineParser);
+			return args;
 		}
 	}
 }

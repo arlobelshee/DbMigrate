@@ -26,5 +26,12 @@ namespace DbMigrate.UI
 
 		[Description("Indicates that this is a test database. Therefore, test data will be applied to it.")]
 		public bool IsTestDatabase { get; set; }
+
+		public void Validate(IModelBindingDefinition<MigrationParameters> commandLineParser)
+		{
+			if (Help || string.IsNullOrEmpty(Engine) || string.IsNullOrEmpty(ConnectionString) ||
+			    string.IsNullOrEmpty(Migrations))
+				throw new TerminateAndShowHelp(commandLineParser);
+		}
 	}
 }

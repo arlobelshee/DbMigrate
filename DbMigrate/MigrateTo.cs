@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Args;
 using DbMigrate.Model;
 using DbMigrate.Model.Support.Database;
 using DbMigrate.UI;
@@ -56,6 +57,7 @@ namespace DbMigrate
 		{
 			try
 			{
+				Validate();
 				User.OnNotify += message => Log.LogMessage(message);
 				using (var db = new Target(DbEngine.SqlServer, ConnectionString, IsTestDatabase))
 				{
@@ -75,6 +77,11 @@ namespace DbMigrate
 				return false;
 			}
 			return true;
+		}
+
+		public void Validate()
+		{
+			_args.Validate(Configuration.Configure<MigrationParameters>());
 		}
 	}
 }

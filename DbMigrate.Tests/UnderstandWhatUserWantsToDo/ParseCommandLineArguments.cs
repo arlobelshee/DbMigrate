@@ -4,7 +4,7 @@ using DbMigrate.UI;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace DbMigrate.Tests.LetUserSeeProgress
+namespace DbMigrate.Tests.UnderstandWhatUserWantsToDo
 {
 	[TestFixture]
 	public class ParseCommandLineArguments

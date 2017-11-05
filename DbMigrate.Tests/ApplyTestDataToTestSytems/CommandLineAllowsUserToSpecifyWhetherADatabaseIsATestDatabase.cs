@@ -1,4 +1,5 @@
 ﻿using DbMigrate.Tests.LetUserSeeProgress;
+using DbMigrate.Tests.UnderstandWhatUserWantsToDo;
 using FluentAssertions;
 using NUnit.Framework;
 
