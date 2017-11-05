@@ -83,7 +83,8 @@ namespace DbMigrate.Model.Support.Database
 		private static T ReadScalar<T>(IDataReader reader)
 		{
 			reader.Read();
-			var result = (T) reader.GetValue(0);
+			object value = reader.GetValue(0);
+			var result = (T) value;
 			reader.Close();
 			return result;
 		}

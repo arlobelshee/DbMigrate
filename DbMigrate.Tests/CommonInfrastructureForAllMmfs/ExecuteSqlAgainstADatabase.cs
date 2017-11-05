@@ -8,22 +8,13 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 	public abstract class ExecuteSqlAgainstADatabase
 	{
 		private const string CreateJunkTable =
-			@"CREATE TABLE some_junk_table{0} (
-    Id [int] IDENTITY(1,1) NOT NULL,
-    name [nvarchar](50) NOT NULL
- CONSTRAINT [PK_JunkTable{0}] PRIMARY KEY CLUSTERED (Id ASC)
-);
-";
-
-		private const string DropJunkTable =
-			@"if exists(select * from sys.objects o where o.name = 'some_junk_table{0}')
-drop table some_junk_table{0};";
-
-		private const string CountJunkTables = "select COUNT(*) from sys.objects o where o.name = 'some_junk_table{0}';";
+			"CREATE TABLE some_junk_table{0} (name varchar(50));";
 
 		private string _tableUid;
 		protected string ConnectionStringToUse;
+		protected string CountJunkTables;
 		protected DbEngine DbToUse;
+		protected string DropJunkTable;
 
 		[SetUp]
 		public void CommonInit()
@@ -39,7 +30,7 @@ drop table some_junk_table{0};";
 
 		private void NumJunkTablesShouldBe(DbTranection testSubject, int expected)
 		{
-			testSubject.ExecuteScalar<int>(string.Format(CountJunkTables, _tableUid))
+			testSubject.ExecuteScalar<long>(string.Format(CountJunkTables, _tableUid))
 				.Result.Should().Be(expected);
 		}
 
@@ -81,7 +72,7 @@ drop table some_junk_table{0};";
 			using (var testSubject = new DbTranection(DbToUse, ConnectionStringToUse))
 			{
 				testSubject.IsOpen.Should().BeFalse();
-				testSubject.ExecuteScalar<int>("select count(*) from sys.objects;").Result.Should().BeGreaterThan(10);
+				testSubject.ExecuteScalar<long>("select 1;").Result.Should().Be(1);
 				testSubject.IsOpen.Should().BeTrue();
 				testSubject.Dispose();
 				testSubject.IsOpen.Should().BeFalse();
@@ -95,7 +86,7 @@ drop table some_junk_table{0};";
 			{
 				testSubject.ExecuteNonQuery(string.Format(CreateJunkTable, _tableUid))
 					.Wait();
-				testSubject.ExecuteScalar<int>(string.Format(CountJunkTables, _tableUid))
+				testSubject.ExecuteScalar<long>(string.Format(CountJunkTables, _tableUid))
 					.Result.Should().Be(1);
 			}
 		}
@@ -105,7 +96,7 @@ drop table some_junk_table{0};";
 		{
 			using (var testSubject = new DbTranection(DbToUse, ConnectionStringToUse))
 			{
-				testSubject.ExecuteScalar<int>("select count(*) from sys.objects;").Result.Should().BeGreaterThan(10);
+				testSubject.ExecuteScalar<long>("select 1;").Result.Should().Be(1);
 			}
 		}
 
@@ -132,6 +123,8 @@ drop table some_junk_table{0};";
 		{
 			DbToUse = DbEngine.SqlLite;
 			ConnectionStringToUse = "Data Source=:memory:;Version=3;New=true;";
+			DropJunkTable = "drop table if exists some_junk_table{0};";
+			CountJunkTables = "select count(*) from sqlite_master where type='table' and name='some_junk_table{0}' collate nocase;";
 		}
 	}
 
@@ -144,6 +137,10 @@ drop table some_junk_table{0};";
 		{
 			DbToUse = DbEngine.SqlServer;
 			ConnectionStringToUse = "Server=.\\SQLEXPRESS;Database=master;Trusted_Connection=True;";
+			DropJunkTable =
+				@"if exists(select * from sys.objects o where o.name = 'some_junk_table{0}')
+drop table some_junk_table{0};";
+			CountJunkTables = "select COUNT(*) from sys.objects o where o.name = 'some_junk_table{0}';";
 		}
 	}
 }
