@@ -122,7 +122,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		public void Init()
 		{
 			DbToUse = DbEngine.SqlLite;
-			ConnectionStringToUse = "Data Source=:memory:;Version=3;New=true;";
+			ConnectionStringToUse = "Data Source=test_db.sqlite;Version=3;New=true;";
 			DropJunkTable = "drop table if exists some_junk_table{0};";
 			CountJunkTables = "select count(*) from sqlite_master where type='table' and name='some_junk_table{0}' collate nocase;";
 		}
