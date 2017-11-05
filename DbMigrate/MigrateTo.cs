@@ -17,31 +17,39 @@ namespace DbMigrate
 		)]
 		public int? TargetVersion
 		{
-			get { return _args.TargetVersion; }
-			set { _args.TargetVersion = value; }
+			get => _args.TargetVersion;
+			set => _args.TargetVersion = value;
+		}
+
+		[Required]
+		[Description("The database engine to work with.")]
+		public string Engine
+		{
+			get => _args.Engine;
+			set => _args.Engine = value;
 		}
 
 		[Required]
 		[Description("The database to migrate.")]
 		public string ConnectionString
 		{
-			get { return _args.ConnectionString; }
-			set { _args.ConnectionString = value; }
+			get => _args.ConnectionString;
+			set => _args.ConnectionString = value;
 		}
 
 		[Required]
 		[Description("The folder that contains the migration definition files.")]
 		public string MigrationFolderName
 		{
-			get { return _args.Migrations; }
-			set { _args.Migrations = value; }
+			get => _args.Migrations;
+			set => _args.Migrations = value;
 		}
 
 		[Description("Indicates that this is a test database. Therefore, test data will be applied to it.")]
 		public bool IsTestDatabase
 		{
-			get { return _args.IsTestDatabase; }
-			set { _args.IsTestDatabase = value; }
+			get => _args.IsTestDatabase;
+			set => _args.IsTestDatabase = value;
 		}
 
 		public override bool Execute()
