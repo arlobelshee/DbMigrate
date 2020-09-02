@@ -27,7 +27,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 			const string dirName = @"c:\directory\that\does\not\exist";
 			var testSubject = new ChangePlanner(null, new ChangeGoal(0, null));
 			testSubject.Invoking(t => t.UsingMigrationsFrom(dirName))
-				.ShouldThrow<TerminateProgramWithMessageException>()
+				.Should().Throw<TerminateProgramWithMessageException>()
 				.WithMessage(
 					@"Could not find migration directory.
 

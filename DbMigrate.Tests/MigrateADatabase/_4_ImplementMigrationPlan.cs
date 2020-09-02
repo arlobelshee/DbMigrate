@@ -85,7 +85,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 		{
 			var testSubject = new ChangePlan(Do.Unapply, new[] {19});
 			Action application = () => testSubject.ApplyTo(_database, _definedMigrations.ToLoaders());
-			application.ShouldThrow<TerminateProgramWithMessageException>().WithMessage(
+			application.Should().Throw<TerminateProgramWithMessageException>().WithMessage(
 				@"Missing migration 19
 
 I needed to Unapply migration 19, but could not find a definition for it.

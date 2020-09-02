@@ -14,7 +14,7 @@ namespace DbMigrate.Tests.UnderstandWhatUserWantsToDo
 		{
 			var testSubject = new MigrateTo();
 			Action call = () => testSubject.Validate();
-			call.ShouldThrow<TerminateAndShowHelp>();
+			call.Should().Throw<TerminateAndShowHelp>();
 		}
 
 		[Test]
@@ -27,7 +27,7 @@ namespace DbMigrate.Tests.UnderstandWhatUserWantsToDo
 				MigrationFolderName = "valid"
 			};
 			Action call = () => testSubject.Validate();
-			call.ShouldThrow<TerminateProgramWithMessageException>()
+			call.Should().Throw<TerminateProgramWithMessageException>()
 				.WithMessage(
 					$"I don't know the database engine '{testSubject.Engine}'. I only understand how to communicate with {DbEngine.KnownEngineNames}. Please extend me if you want to use that engine.");
 		}
@@ -37,7 +37,7 @@ namespace DbMigrate.Tests.UnderstandWhatUserWantsToDo
 		{
 			var testSubject = new MigrateTo {Engine = "sqlite", ConnectionString = "valid", MigrationFolderName = "valid"};
 			Action call = () => testSubject.Validate();
-			call.ShouldNotThrow();
+			call.Should().NotThrow();
 		}
 	}
 }
