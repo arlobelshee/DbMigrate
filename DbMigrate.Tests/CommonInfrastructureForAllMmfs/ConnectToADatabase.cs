@@ -15,25 +15,29 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 
 		[Test]
 		public void DatabaseShouldCommitItsTranection()
-		{
-			var tracer = new TrannectionTraceOnly();
-			var testSubject = new DatabaseRemote(tracer, DbEngine.None);
-			testSubject.Commit();
-			tracer.IsCommitted.Should().BeTrue();
+        {
+            var tracer = new TrannectionTraceOnly();
+            using (var testSubject = new DatabaseRemote(tracer, DbEngine.None))
+            {
+                testSubject.Commit();
+				tracer.IsCommitted.Should().BeTrue();
+			}
 		}
 
-		[Test]
+        [Test]
 		public void DatabaseShouldCreateATranection()
-		{
-			const string connectionString = "some fake connection string;";
-			var testSubject = new DatabaseRemote(DbEngine.None, connectionString);
-			testSubject.Tranection.Should().BeOfType<DbTranection>();
-			testSubject.Tranection.ShouldBeEquivalentTo(
-				new {IsOpen = false, ConnectionString = ExpectedConnectionString(connectionString)},
-				options => options.ExcludingMissingMembers());
-		}
+        {
+            const string connectionString = "some fake connection string;";
+            using (var testSubject = new DatabaseRemote(DbEngine.None, connectionString))
+            {
+                testSubject.Tranection.Should().BeOfType<DbTranection>();
+                testSubject.Tranection.Should().BeEquivalentTo(
+                    new { IsOpen = false, ConnectionString = ExpectedConnectionString(connectionString) },
+                    options => options.ExcludingMissingMembers());
+            }
+        }
 
-		[Test]
+        [Test]
 		public void DatabaseShouldDisposeItsTranection()
 		{
 			var tracer = new TrannectionTraceOnly();
@@ -44,25 +48,29 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 
 		[Test]
 		public void TargetShouldConnectToNonProductionDatabasesCorrectly()
-		{
-			const string connectionString = "some fake connection string;";
-			var testSubject = new Target(DbEngine.None, connectionString, true);
-			testSubject.Database.Should().BeOfType<DatabaseRemote>();
-			testSubject.Database.IsTestDatabase.Should().BeTrue();
-		}
+        {
+            const string connectionString = "some fake connection string;";
+            using (var testSubject = new Target(DbEngine.None, connectionString, true))
+            {
+                testSubject.Database.Should().BeOfType<DatabaseRemote>();
+                testSubject.Database.IsTestDatabase.Should().BeTrue();
+            }
+        }
 
-		[Test]
+        [Test]
 		public void TargetShouldCreateADatabase()
-		{
-			const string connectionString = "some fake connection string;";
-			var testSubject = new Target(DbEngine.None, connectionString, false);
-			testSubject.Database.Should().BeOfType<DatabaseRemote>();
-			((DatabaseRemote) testSubject.Database).ShouldBeEquivalentTo(
-				new {ConnectionString = ExpectedConnectionString(connectionString)}, options => options.ExcludingMissingMembers());
-			testSubject.Database.IsTestDatabase.Should().BeFalse();
-		}
+        {
+            const string connectionString = "some fake connection string;";
+            using (var testSubject = new Target(DbEngine.None, connectionString, false))
+            {
+                testSubject.Database.Should().BeOfType<DatabaseRemote>();
+                ((DatabaseRemote)testSubject.Database).Should().BeEquivalentTo(
+                    new { ConnectionString = ExpectedConnectionString(connectionString) }, options => options.ExcludingMissingMembers());
+                testSubject.Database.IsTestDatabase.Should().BeFalse();
+            }
+        }
 
-		[Test]
+        [Test]
 		public void TargetShouldDisposeItsDatabase()
 		{
 			var tracer = new DatabaseLocalMemory();

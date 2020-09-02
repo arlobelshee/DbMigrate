@@ -1,105 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{725FBC92-623D-45A3-A4F2-0F0CD218B39C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DbMigrate.Tests</RootNamespace>
-    <AssemblyName>DbMigrate.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <TargetFrameworkProfile />
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+
+    <Authors>Arlo Belshee</Authors>
+
+    <Company>DbMigrate project</Company>
+
+    <Product>DbMigrate</Product>
+
+    <Version>2.0.0</Version>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Build.Utilities.v4.0" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="ApplyTestDataToTestSytems\CommandLineAllowsUserToSpecifyWhetherADatabaseIsATestDatabase.cs" />
-    <Compile Include="ApplyTestDataToTestSytems\DatabaseAppliesTestDataFromMigrationsWhenToldToDoSo.cs" />
-    <Compile Include="UnderstandWhatUserWantsToDo\ParseCommandLineArguments.cs" />
-    <Compile Include="MigrateADatabase\_2_FigureOutWhatMigrationsWillBeNeededToMeetTheGoal.cs" />
-    <Compile Include="MigrateADatabase\_1_PickTheGoal.cs" />
-    <Compile Include="CommonInfrastructureForAllMmfs\ConnectToADatabase.cs" />
-    <Compile Include="CommonInfrastructureForAllMmfs\DatabaseAppliesAndUnappliesMigrations.cs" />
-    <Compile Include="CommonInfrastructureForAllMmfs\DatabaseManageDbVersion.cs" />
-    <Compile Include="CommonInfrastructureForAllMmfs\ExecuteSqlAgainstADatabase.cs" />
-    <Compile Include="MigrateADatabase\_4_ImplementMigrationPlan.cs" />
-    <Compile Include="MigrateADatabase\_3_LocateAllDefinedMigrations.cs" />
-    <Compile Include="MigrateADatabase\_3B2_ExtractMigrationSpecFromFile.cs" />
-    <Compile Include="MigrateADatabase\_3B_LocateMigrationDefinitionsInMigrationFolder.cs" />
-    <Compile Include="MigrateADatabase\_3A_LocateMigrationToMakeDatabaseVersionAware.cs" />
-    <Compile Include="MigrateADatabase\_3B1_ValidateMigrationSpecifications.cs" />
-    <Compile Include="LetUserSeeProgress\NotiyUserOfProgress.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnderstandWhatUserWantsToDo\UnderstandBsBuildTaskApiInvocation.cs" />
-    <Compile Include="__UtilitiesForTesting\TestData.cs" />
+    <ProjectReference Include="..\DbMigrate\DbMigrate.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\DbMigrate\App.config">
-      <Link>App.config</Link>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DbMigrate\DbMigrate.csproj">
-      <Project>{D264496D-6E76-49D5-9002-C9948A272139}</Project>
-      <Name>DbMigrate</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="ApprovalTests">
-      <Version>3.0.13</Version>
-    </PackageReference>
-    <PackageReference Include="FluentAssertions">
-      <Version>4.19.4</Version>
-    </PackageReference>
-    <PackageReference Include="NUnit">
-      <Version>3.8.1</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

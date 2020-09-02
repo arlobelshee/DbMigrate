@@ -3,14 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 15.0.27004.2006
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbMigrate.Tests", "DbMigrate.Tests\DbMigrate.Tests.csproj", "{725FBC92-623D-45A3-A4F2-0F0CD218B39C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{17CA0ED5-415B-44D5-AFCD-E0F8449E3E30}"
 	ProjectSection(SolutionItems) = preProject
 		DbMigrate.sln.DotSettings = DbMigrate.sln.DotSettings
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbMigrate", "DbMigrate\DbMigrate.csproj", "{F9954F05-2B11-45E8-8082-1848CCFCC4B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbMigrate.Tests", "DbMigrate.Tests\DbMigrate.Tests.csproj", "{A3BB3ED3-667D-44CB-AEDC-8BDC190D75E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,12 +20,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{725FBC92-623D-45A3-A4F2-0F0CD218B39C}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{725FBC92-623D-45A3-A4F2-0F0CD218B39C}.Debug|x86.ActiveCfg = Debug|x86
-		{725FBC92-623D-45A3-A4F2-0F0CD218B39C}.Debug|x86.Build.0 = Debug|x86
-		{725FBC92-623D-45A3-A4F2-0F0CD218B39C}.Release|Any CPU.ActiveCfg = Release|x86
-		{725FBC92-623D-45A3-A4F2-0F0CD218B39C}.Release|x86.ActiveCfg = Release|x86
-		{725FBC92-623D-45A3-A4F2-0F0CD218B39C}.Release|x86.Build.0 = Release|x86
 		{F9954F05-2B11-45E8-8082-1848CCFCC4B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F9954F05-2B11-45E8-8082-1848CCFCC4B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9954F05-2B11-45E8-8082-1848CCFCC4B8}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -34,6 +28,14 @@ Global
 		{F9954F05-2B11-45E8-8082-1848CCFCC4B8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F9954F05-2B11-45E8-8082-1848CCFCC4B8}.Release|x86.ActiveCfg = Release|Any CPU
 		{F9954F05-2B11-45E8-8082-1848CCFCC4B8}.Release|x86.Build.0 = Release|Any CPU
+		{A3BB3ED3-667D-44CB-AEDC-8BDC190D75E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3BB3ED3-667D-44CB-AEDC-8BDC190D75E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3BB3ED3-667D-44CB-AEDC-8BDC190D75E2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A3BB3ED3-667D-44CB-AEDC-8BDC190D75E2}.Debug|x86.Build.0 = Debug|Any CPU
+		{A3BB3ED3-667D-44CB-AEDC-8BDC190D75E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3BB3ED3-667D-44CB-AEDC-8BDC190D75E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3BB3ED3-667D-44CB-AEDC-8BDC190D75E2}.Release|x86.ActiveCfg = Release|Any CPU
+		{A3BB3ED3-667D-44CB-AEDC-8BDC190D75E2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

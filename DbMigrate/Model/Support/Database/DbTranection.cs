@@ -60,6 +60,7 @@ namespace DbMigrate.Model.Support.Database
 
 		private void EnsureIsOpen()
 		{
+			throw new Exception(string.Concat(DbProviderFactories.GetProviderInvariantNames()));
 			if (IsOpen) return;
 			_connection = DbProviderFactories.GetFactory(_dbEngine.ProviderFactoryName).CreateConnection();
 			if (_connection == null)

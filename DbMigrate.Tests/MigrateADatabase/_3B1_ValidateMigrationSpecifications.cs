@@ -59,7 +59,7 @@ section header, not at the end of the section.
 		public void BadMigrationFileNameShouldThrowFriendlyMessage()
 		{
 			Action testSubject = () => MigrationFile.FileNameVersion("3asfasdf.migration.sql");
-			testSubject.ShouldThrow<TerminateProgramWithMessageException>()
+			testSubject.Should().Throw<TerminateProgramWithMessageException>()
 				.WithMessage(
 					@"Invalid migration file name found.
 
@@ -75,7 +75,7 @@ X is the version number and name can be anything you want.")
 		public void BadSectionNameShouldTerminateWithFriendlyMessage()
 		{
 			Parsing(MigrationWithBadSectionName, ValidFileName)
-				.ShouldThrow<TerminateProgramWithMessageException>()
+				.Should().Throw<TerminateProgramWithMessageException>()
 				.WithMessage(
 					@"Unable to parse migration file.
 
@@ -97,7 +97,7 @@ The only required sections are apply and unapply.")
 		public void DuplicateSectionShouldTerminateWithFriendlyMessage()
 		{
 			Parsing(MigrationWithDuplicateSection, ValidFileName)
-				.ShouldThrow<TerminateProgramWithMessageException>()
+				.Should().Throw<TerminateProgramWithMessageException>()
 				.WithMessage(
 					@"Unable to parse migration file.
 
@@ -119,7 +119,7 @@ The only required sections are apply and unapply.")
 		public void UnparsableVersionNumberShouldThrowFriendlyErrorMessage()
 		{
 			Parsing(MigrationWithUnparsableVersionLine, ValidFileName)
-				.ShouldThrow<TerminateProgramWithMessageException>()
+				.Should().Throw<TerminateProgramWithMessageException>()
 				.WithMessage(
 					@"Unable to parse migration file.
 
@@ -143,7 +143,7 @@ contents before running a migration during development.")
 			var contentsFor3345 = _3B2_ExtractMigrationSpecFromFile.MigrationContentsForVersion(3345);
 			const string fileNameFor217 = "217_something_awesome.migration.sql";
 			Parsing(contentsFor3345, fileNameFor217)
-				.ShouldThrow<TerminateProgramWithMessageException>()
+				.Should().Throw<TerminateProgramWithMessageException>()
 				.WithMessage(
 					@"Unable to parse migration file.
 
@@ -171,7 +171,7 @@ during development.")
 		public void VersionShouldBeRequired()
 		{
 			Parsing(MigrationWithoutVersionNumber, ValidFileName)
-				.ShouldThrow<TerminateProgramWithMessageException>()
+				.Should().Throw<TerminateProgramWithMessageException>()
 				.WithMessage(
 					@"Unable to parse migration file.
 
@@ -191,7 +191,7 @@ contents before running a migration during development.")
 		public void WrongSectionOrderShouldTerminateWithFriendlyMessage()
 		{
 			Parsing(MigrationInWrongOrder, ValidFileName)
-				.ShouldThrow<TerminateProgramWithMessageException>()
+				.Should().Throw<TerminateProgramWithMessageException>()
 				.WithMessage(
 					@"Unable to parse migration file.
 

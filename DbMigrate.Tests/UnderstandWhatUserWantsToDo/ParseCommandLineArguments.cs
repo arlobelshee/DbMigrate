@@ -32,49 +32,49 @@ namespace DbMigrate.Tests.UnderstandWhatUserWantsToDo
 		public void EmptyCommandLineShouldRejectAndShowHelp()
 		{
 			CommandLine()
-				.ShouldThrow<TerminateAndShowHelp>();
+				.Should().Throw<TerminateAndShowHelp>();
 		}
 
 		[Test]
 		public void EmptyConnectionStringShouldShowHelp()
 		{
 			CommandLine("--migrations", "valid_value", "--connectionstring", "--engine", "valid_value")
-				.ShouldThrow<TerminateAndShowHelp>();
+				.Should().Throw<TerminateAndShowHelp>();
 		}
 
 		[Test]
 		public void EmptyEngineShouldShowHelp()
 		{
 			CommandLine("--migrations", "valid_value", "--connectionstring", "valid_value", "--engine")
-				.ShouldThrow<TerminateAndShowHelp>();
+				.Should().Throw<TerminateAndShowHelp>();
 		}
 
 		[Test]
 		public void EmptyMigrationFolderShouldShowHelp()
 		{
 			CommandLine("--migrations", "--connectionstring", "valid_value", "--engine", "valid_value")
-				.ShouldThrow<TerminateAndShowHelp>();
+				.Should().Throw<TerminateAndShowHelp>();
 		}
 
 		[Test]
 		public void MissingConnectionStringShouldShowHelp()
 		{
 			CommandLine("--migrations", "valid_value", "--engine", "valid_value")
-				.ShouldThrow<TerminateAndShowHelp>();
+				.Should().Throw<TerminateAndShowHelp>();
 		}
 
 		[Test]
 		public void MissingEngineShouldShowHelp()
 		{
 			CommandLine("--migrations", "valid_value", "--connectionstring", "valid_value")
-				.ShouldThrow<TerminateAndShowHelp>();
+				.Should().Throw<TerminateAndShowHelp>();
 		}
 
 		[Test]
 		public void MissingMigrationFolderShouldShowHelp()
 		{
 			CommandLine("--connectionstring", "valid_value", "--engine", "valid_value")
-				.ShouldThrow<TerminateAndShowHelp>();
+				.Should().Throw<TerminateAndShowHelp>();
 		}
 
 		[Test]
@@ -95,7 +95,7 @@ namespace DbMigrate.Tests.UnderstandWhatUserWantsToDo
 		public void RequestingHelpShouldShowHelp()
 		{
 			CommandLine("--help")
-				.ShouldThrow<TerminateAndShowHelp>();
+				.Should().Throw<TerminateAndShowHelp>();
 		}
 
 		[Test]
