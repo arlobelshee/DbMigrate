@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using DbMigrate.UI;
@@ -16,13 +17,13 @@ end
 else
 begin
 	select -1;
-end", typeof(SqlCommand));
+end", typeof(SqlClientFactory));
 
 		public static DbEngine SqlLite = new DbEngine("System.Data.SQLite", @"
 select case (select count(*) from sqlite_master where type='table' and name='__database_info' collate nocase)
 when 1 then (select top 1 version_number from __database_info)
 else -1
-end", typeof(SQLiteCommand));
+end", typeof(SQLiteFactory));
 
 		public static DbEngine None = new DbEngine("", null, null);
 		private static readonly Dictionary<string, DbEngine> KnownEngines;
@@ -55,6 +56,11 @@ end", typeof(SQLiteCommand));
 					$"I don't know the database engine '{name}'. I only understand how to communicate with {KnownEngineNames}. Please extend me if you want to use that engine.",
 					3);
 			return KnownEngines[name];
+		}
+
+		public DbConnection CreateConnection()
+		{
+			return DbProviderFactories.GetFactory(ProviderFactoryName).CreateConnection();
 		}
 	}
 }

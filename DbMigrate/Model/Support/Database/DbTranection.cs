@@ -59,19 +59,18 @@ namespace DbMigrate.Model.Support.Database
 		}
 
 		private void EnsureIsOpen()
-		{
-			throw new Exception(string.Concat(DbProviderFactories.GetProviderInvariantNames()));
-			if (IsOpen) return;
-			_connection = DbProviderFactories.GetFactory(_dbEngine.ProviderFactoryName).CreateConnection();
-			if (_connection == null)
-				throw new InvalidOperationException(
-					$"Failed to connect to database using provider {_dbEngine.ProviderFactoryName} and connection string {ConnectionString}");
-			_connection.ConnectionString = ConnectionString;
-			_connection.Open();
-			_transaction = _connection.BeginTransaction(IsolationLevel.Serializable);
-		}
+        {
+            if (IsOpen) return;
+            _connection = _dbEngine.CreateConnection();
+            if (_connection == null)
+                throw new InvalidOperationException(
+                    $"Failed to connect to database using provider {_dbEngine.ProviderFactoryName} and connection string {ConnectionString}");
+            _connection.ConnectionString = ConnectionString;
+            _connection.Open();
+            _transaction = _connection.BeginTransaction(IsolationLevel.Serializable);
+        }
 
-		private DbCommand GetCommand(string sql)
+        private DbCommand GetCommand(string sql)
 		{
 			EnsureIsOpen();
 			var command = _connection.CreateCommand();
