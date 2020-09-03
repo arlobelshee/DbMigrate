@@ -12,10 +12,6 @@ namespace DbMigrate.Tests.MigrateADatabase
 	{
 		private const string ValidFileName = "3345_some_migration_name.migration.sql";
 		private static readonly string TrivialMigration = MigrationContentsForVersion(3345);
-		private static readonly string ErrorMigration = @"-- Migration version: 3345
--- Migration apply --
-create table Foo;
-";
 
 		public static string MigrationContentsForVersion(int version)
 		{
@@ -84,29 +80,6 @@ drop table Foo;
 		{
 			var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
 			testSubject.DeleteTestData.Should().Be("delete from Foo;");
-		}
-
-		[Test]
-		public void LoadingErroneousFileShouldProvideErrorInfoToUser()
-		{
-			Action testSubject = () => new MigrationFile(new StringReader(ErrorMigration), ValidFileName);
-			testSubject.Should()
-				.Throw<UI.TerminateProgramWithMessageException>()
-				.WithMessage(@"Unable to parse migration file.
-
-It appears that you are attempting to start a new migration section on line 2.
-However, I do not recognize the section 'apply'.
-
-This tool only understands the following sections, and they must be defined in
-this order.
-  start upgrade
-  insert test data
-  finish upgrade
-  start downgrade
-  delete test data
-  finish downgrade
-
-The only required sections are start upgrade and start downgrade.");
 		}
 
 		[Test]

@@ -78,7 +78,7 @@ However, I do not recognize the section '{5}'.";
 
 		internal const string ErrorDuplicateSection =
 			@"I encountered a duplicate {5} section. Each section may only be used once.
-The second apply section begins on line {1}.";
+The second {5} section begins on line {1}.";
 
 		internal const string ErrorSectionOrdering =
 			@"The migration sections are not in the correct order.

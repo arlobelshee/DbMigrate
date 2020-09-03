@@ -24,76 +24,92 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
 
 		[Test]
 		public void InMemoryDatabaseShouldDefaultToBeProductionDatabase()
-		{
-			var db = new DatabaseLocalMemory();
-			db.IsTestDatabase.Should().BeFalse();
-		}
+        {
+            using (var db = new DatabaseLocalMemory())
+            {
+                db.IsTestDatabase.Should().BeFalse();
+            }
+        }
 
-		[Test]
+        [Test]
 		public void RemoteDatabaseShouldDefaultToBeProductionDatabase()
-		{
-			var db = new DatabaseRemote(new TrannectionTraceOnly(), DbEngine.None);
-			db.IsTestDatabase.Should().BeFalse();
-		}
+        {
+            using (var db = new DatabaseRemote(new TrannectionTraceOnly(), DbEngine.None))
+            {
+                db.IsTestDatabase.Should().BeFalse();
+            }
+        }
 
-		[Test]
+        [Test]
 		public void ProductionRemoteDatabaseShouldNotApplyTestData()
-		{
-			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection, DbEngine.None);
-			testSubject.Apply(Migration2);
-			testSubject.Apply(Migration3);
-			tranection.SqlExecuted.Should().Equal(new[] {Migration2.BeginUp, Migration3.BeginUp});
-		}
+        {
+            var tranection = new TrannectionTraceOnly().BeginCapturing();
+            using (var testSubject = new DatabaseRemote(tranection, DbEngine.None))
+            {
+                testSubject.Apply(Migration2);
+                testSubject.Apply(Migration3);
+            }
+            tranection.SqlExecuted.Should().Equal(new[] { Migration2.BeginUp, Migration3.BeginUp });
+        }
 
-		[Test]
+        [Test]
 		public void NonProductionRemoteDatabaseShouldApplyTestData()
-		{
-			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection, DbEngine.None) {IsTestDatabase = true};
-			testSubject.Apply(Migration2);
-			testSubject.Apply(Migration3);
-			tranection.SqlExecuted.Should().Equal(new[]
-				{Migration2.BeginUp, Migration2.InsertTestData, Migration3.BeginUp, Migration3.InsertTestData});
-		}
+        {
+            var tranection = new TrannectionTraceOnly().BeginCapturing();
+            using (var testSubject = new DatabaseRemote(tranection, DbEngine.None) { IsTestDatabase = true })
+            {
+                testSubject.Apply(Migration2);
+                testSubject.Apply(Migration3);
+            }
+            tranection.SqlExecuted.Should().Equal(new[]
+                {Migration2.BeginUp, Migration2.InsertTestData, Migration3.BeginUp, Migration3.InsertTestData});
+        }
 
-		[Test]
+        [Test]
 		public void ShouldNeverInsertTestDataWhichIsNoOp()
-		{
-			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection, DbEngine.None) {IsTestDatabase = true};
-			testSubject.Apply(MigrationWithoutTestData);
-			tranection.SqlExecuted.Should().Equal(new[] {MigrationWithoutTestData.BeginUp});
-		}
+        {
+            var tranection = new TrannectionTraceOnly().BeginCapturing();
+            using (var testSubject = new DatabaseRemote(tranection, DbEngine.None) { IsTestDatabase = true })
+            {
+                testSubject.Apply(MigrationWithoutTestData);
+            }
+            tranection.SqlExecuted.Should().Equal(new[] { MigrationWithoutTestData.BeginUp });
+        }
 
-		[Test]
+        [Test]
 		public void ProductionRemoteDatabaseShouldNotRemoveTestData()
-		{
-			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection, DbEngine.None);
-			testSubject.Unapply(Migration3);
-			testSubject.Unapply(Migration2);
-			tranection.SqlExecuted.Should().Equal(new[] {Migration3.BeginDown, Migration2.BeginDown});
-		}
+        {
+            var tranection = new TrannectionTraceOnly().BeginCapturing();
+            using (var testSubject = new DatabaseRemote(tranection, DbEngine.None))
+            {
+                testSubject.Unapply(Migration3);
+                testSubject.Unapply(Migration2);
+            }
+            tranection.SqlExecuted.Should().Equal(new[] { Migration3.BeginDown, Migration2.BeginDown });
+        }
 
-		[Test]
+        [Test]
 		public void NonProductionRemoteDatabaseShouldRemoveTestData()
-		{
-			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection, DbEngine.None) {IsTestDatabase = true};
-			testSubject.Unapply(Migration3);
-			testSubject.Unapply(Migration2);
-			tranection.SqlExecuted.Should().Equal(new[]
-				{Migration3.DeleteTestData, Migration3.BeginDown, Migration2.DeleteTestData, Migration2.BeginDown});
-		}
+        {
+            var tranection = new TrannectionTraceOnly().BeginCapturing();
+            using (var testSubject = new DatabaseRemote(tranection, DbEngine.None) { IsTestDatabase = true })
+            {
+                testSubject.Unapply(Migration3);
+                testSubject.Unapply(Migration2);
+            }
+            tranection.SqlExecuted.Should().Equal(new[]
+                {Migration3.DeleteTestData, Migration3.BeginDown, Migration2.DeleteTestData, Migration2.BeginDown});
+        }
 
-		[Test]
+        [Test]
 		public void ShouldNeverDeleteTestDataWhichIsNoOp()
-		{
-			var tranection = new TrannectionTraceOnly().BeginCapturing();
-			var testSubject = new DatabaseRemote(tranection, DbEngine.None) {IsTestDatabase = true};
-			testSubject.Unapply(MigrationWithoutTestData);
-			tranection.SqlExecuted.Should().Equal(new[] {MigrationWithoutTestData.BeginDown});
-		}
-	}
+        {
+            var tranection = new TrannectionTraceOnly().BeginCapturing();
+            using (var testSubject = new DatabaseRemote(tranection, DbEngine.None) { IsTestDatabase = true })
+            {
+                testSubject.Unapply(MigrationWithoutTestData);
+            }
+            tranection.SqlExecuted.Should().Equal(new[] { MigrationWithoutTestData.BeginDown });
+        }
+    }
 }

@@ -14,29 +14,29 @@ namespace DbMigrate.Tests.MigrateADatabase
 		private const string MigrationWithDuplicateSection =
 			@"
 -- Migration version: 3345
--- Migration apply --
+-- Migration start upgrade --
 -- Migration insert test data --
--- Migration apply --
+-- Migration start upgrade --
 ";
 
 		private const string MigrationInWrongOrder =
 			@"
 -- Migration version: 3345
 -- Migration insert test data --
--- Migration apply --
+-- Migration start upgrade --
 ";
 
 		private const string MigrationWithUnparsableVersionLine =
 			@"
 -- Migration version: 33 --
--- Migration apply --
--- Migration unapply --
+-- Migration start upgrade --
+-- Migration start downgrade --
 ";
 
 		private const string MigrationWithoutVersionNumber =
 			@"
--- Migration apply --
--- Migration unapply --
+-- Migration start upgrade --
+-- Migration start downgrade --
 ";
 
 		private const string MigrationWithBadSectionName =
@@ -84,12 +84,14 @@ However, I do not recognize the section 'unknown section or typo'.
 
 This tool only understands the following sections, and they must be defined in
 this order.
-  apply
+  start upgrade
   insert test data
+  finish upgrade
+  start downgrade
   delete test data
-  unapply
+  finish downgrade
 
-The only required sections are apply and unapply.")
+The only required sections are start upgrade and start downgrade.")
 				.And.ErrorLevel.Should().Be(1);
 		}
 
@@ -101,17 +103,19 @@ The only required sections are apply and unapply.")
 				.WithMessage(
 					@"Unable to parse migration file.
 
-I encountered a duplicate apply section. Each section may only be used once.
-The second apply section begins on line 5.
+I encountered a duplicate start upgrade section. Each section may only be used once.
+The second start upgrade section begins on line 5.
 
 This tool only understands the following sections, and they must be defined in
 this order.
-  apply
+  start upgrade
   insert test data
+  finish upgrade
+  start downgrade
   delete test data
-  unapply
+  finish downgrade
 
-The only required sections are apply and unapply.")
+The only required sections are start upgrade and start downgrade.")
 				.And.ErrorLevel.Should().Be(1);
 		}
 
@@ -196,16 +200,18 @@ contents before running a migration during development.")
 					@"Unable to parse migration file.
 
 The migration sections are not in the correct order.
-Problem detected on line 4, when I encountered the apply section.
+Problem detected on line 4, when I encountered the start upgrade section.
 
 This tool only understands the following sections, and they must be defined in
 this order.
-  apply
+  start upgrade
   insert test data
+  finish upgrade
+  start downgrade
   delete test data
-  unapply
+  finish downgrade
 
-The only required sections are apply and unapply.")
+The only required sections are start upgrade and start downgrade.")
 				.And.ErrorLevel.Should().Be(1);
 		}
 	}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using DbMigrate.Util;
 
@@ -16,8 +17,10 @@ namespace DbMigrate.Model.Support.Database
 			SqlExecuted = new List<string>();
 		}
 
-		public Func<string, object> ExecuteScalarHandler { private get; set; }
-		public Action<string> ExecuteNonQueryHandler { private get; set; }
+		[NotNull]
+		public Func<string, object> ExecuteScalarHandler { private get; set; } = s => { return null; };
+		[NotNull]
+		public Action<string> ExecuteNonQueryHandler { private get; set; } = s => { };
 		public bool IsDisposed { get; private set; }
 		public bool IsCommitted { get; private set; }
 		public List<string> SqlExecuted { get; }
