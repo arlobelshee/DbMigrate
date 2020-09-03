@@ -17,12 +17,13 @@ namespace DbMigrate.Model
 
 		public IDatabase Database { get; }
 
-		public void Dispose()
-		{
-			Database.Dispose();
-		}
+        public void Dispose()
+        {
+            Database.Dispose();
+            GC.SuppressFinalize(this);
+        }
 
-		public ChangePlanner MigrateTo(int? targetVersion)
+        public ChangePlanner MigrateTo(int? targetVersion)
 		{
 			return new ChangePlanner(Database, FigureOutTheGoal(Database, targetVersion));
 		}

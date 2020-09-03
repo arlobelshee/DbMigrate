@@ -8,11 +8,15 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
 	[TestFixture]
 	public class DatabaseAppliesTestDataFromMigrationsWhenToldToDoSo
 	{
-		private static readonly MigrationSpecification Migration2 = new MigrationSpecification(2, "2_something", "do 2",
-			"undo 2", "insert data 2", "remove data 2");
+		private static readonly MigrationSpecification Migration2 = new MigrationSpecification(2, "2_something",
+			"start do 2", "finish do 2",
+			"start undo 2", "finish undo 2",
+			"insert data 2", "remove data 2");
 
-		private static readonly MigrationSpecification Migration3 = new MigrationSpecification(3, "3_something", "do 3",
-			"undo 3", "insert data 3", "remove data 3");
+		private static readonly MigrationSpecification Migration3 = new MigrationSpecification(3, "2_something",
+			"do 3", "",
+			"undo 3", "",
+			"insert data 3", "remove data 3");
 
 		private static readonly MigrationSpecification MigrationWithoutTestData = new MigrationSpecification(4, "4_something",
 			"do 4",

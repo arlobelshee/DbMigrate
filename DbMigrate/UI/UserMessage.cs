@@ -91,6 +91,6 @@ This tool only understands the following sections, and they must be defined in
 this order.
 {4}
 
-The only required sections are apply and unapply.";
+The only required sections are start upgrade and start downgrade.";
 	}
 }

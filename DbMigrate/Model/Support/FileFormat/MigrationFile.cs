@@ -23,10 +23,12 @@ namespace DbMigrate.Model.Support.FileFormat
 			Version = -1; // So that, if it isn't set by file contents, we'll make a detectably bad migration.
 			_expectedSections = new List<SectionFinder>
 			{
-				new SectionFinder(0, "apply", s => BeginUp = s),
+				new SectionFinder(0, "start upgrade", s => StartUp = s),
 				new SectionFinder(1, "insert test data", s => InsertTestData = s),
-				new SectionFinder(2, "delete test data", s => DeleteTestData = s),
-				new SectionFinder(3, "unapply", s => BeginDown = s)
+				new SectionFinder(2, "finish upgrade", s => FinishUp = s),
+				new SectionFinder(3, "start downgrade", s => StartDown = s),
+				new SectionFinder(4, "delete test data", s => DeleteTestData = s),
+				new SectionFinder(5, "finish downgrade", s => FinishDown = s)
 			};
 			_fileName = fileName;
 			Name = fileName.UpToFirst(".");
@@ -36,8 +38,10 @@ namespace DbMigrate.Model.Support.FileFormat
 
 		public int Version { get; private set; }
 		public string Name { get; }
-		public string BeginUp { get; private set; }
-		public string BeginDown { get; private set; }
+		public string StartUp { get; private set; }
+		public string FinishUp { get; private set; }
+		public string StartDown { get; private set; }
+		public string FinishDown { get; private set; }
 		public string InsertTestData { get; private set; }
 		public string DeleteTestData { get; private set; }
 
