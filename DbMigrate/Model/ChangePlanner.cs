@@ -47,13 +47,13 @@ namespace DbMigrate.Model
 			if (targetVersion >= spec.CurrentVersion)
 			{
 				var firstMigrationToApply = spec.CurrentVersion + 1;
-				return new ChangePlan(Do.Apply,
+				return new ChangePlan(Do.BeginUp,
 					Enumerable.Range(firstMigrationToApply, targetVersion - firstMigrationToApply + 1));
 			}
 			else
 			{
 				var firstMigrationToApply = spec.CurrentVersion;
-				return new ChangePlan(Do.Unapply,
+				return new ChangePlan(Do.BeginDown,
 					Enumerable.Range(targetVersion + 1, firstMigrationToApply - targetVersion).Reverse());
 			}
 		}

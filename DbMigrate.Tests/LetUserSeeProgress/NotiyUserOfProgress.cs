@@ -48,7 +48,7 @@ namespace DbMigrate.Tests.LetUserSeeProgress
 		[Test]
 		public void ApplyingMigrationShouldNotifyUser()
 		{
-			var testSubject = new ChangePlan(Do.Apply, new[] {3, 4});
+			var testSubject = new ChangePlan(Do.BeginUp, new[] {3, 4});
 			testSubject.ApplyTo(new DatabaseLocalMemory(), TestData.Migrations(3, 4).ToLoaders());
 
 			_messagesSentToUser.Should().ContainInOrder(new[]
@@ -73,7 +73,7 @@ namespace DbMigrate.Tests.LetUserSeeProgress
 		[Test]
 		public void UnapplyingMigrationShouldNotifyUser()
 		{
-			var testSubject = new ChangePlan(Do.Unapply, new[] {5, 4});
+			var testSubject = new ChangePlan(Do.BeginDown, new[] {5, 4});
 			testSubject.ApplyTo(new DatabaseLocalMemory(), TestData.Migrations(4, 5).ToLoaders());
 
 			_messagesSentToUser.Should().ContainInOrder(new[]

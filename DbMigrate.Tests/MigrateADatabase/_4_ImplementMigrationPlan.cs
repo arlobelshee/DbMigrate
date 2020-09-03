@@ -34,7 +34,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 		[Test]
 		public void ApplyingNoMigrationsShouldDoNothing()
 		{
-			var testSubject = new ChangePlan(Do.Apply, new int[] { });
+			var testSubject = new ChangePlan(Do.BeginUp, new int[] { });
 			testSubject.ApplyTo(_database, _definedMigrations.ToLoaders());
 			_database.AppliedMigrations.Should().BeEmpty();
 			_database.CommittedTheChanges.Should().BeFalse();
@@ -43,7 +43,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 		[Test]
 		public void PlanToApplyShouldLoadCorrectMigrationsAndApplyThemAgainstTheDatabase()
 		{
-			var testSubject = new ChangePlan(Do.Apply, new[] {2, 3});
+			var testSubject = new ChangePlan(Do.BeginUp, new[] {2, 3});
 			testSubject.ApplyTo(_database, _definedMigrations.ToLoaders());
 			_database.AppliedMigrations.Should().ContainInOrder(MigrationsForVersions(_definedMigrations, 2, 3));
 		}
@@ -51,7 +51,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 		[Test]
 		public void PlanToApplyShouldSetDatabaseVersionToLastMigrationApplied()
 		{
-			var testSubject = new ChangePlan(Do.Apply, new[] {2, 3});
+			var testSubject = new ChangePlan(Do.BeginUp, new[] {2, 3});
 			testSubject.ApplyTo(_database, _definedMigrations.ToLoaders());
 			_database.CurrentVersion.Result.Should().Be(3);
 		}
@@ -59,7 +59,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 		[Test]
 		public void PlanToUnapplyShouldLoadCorrectMigrationsAndUnapplyThemAgainstTheDatabase()
 		{
-			var testSubject = new ChangePlan(Do.Unapply, new[] {4, 3});
+			var testSubject = new ChangePlan(Do.BeginDown, new[] {4, 3});
 			testSubject.ApplyTo(_database, _definedMigrations.ToLoaders());
 			_database.UnappliedMigrations.Should().ContainInOrder(MigrationsForVersions(_definedMigrations, 4, 3));
 		}
@@ -67,7 +67,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 		[Test]
 		public void PlanToUnapplyShouldSetDatabaseVersionToOneLessThanLastMigrationUnapplied()
 		{
-			var testSubject = new ChangePlan(Do.Unapply, new[] {4, 3});
+			var testSubject = new ChangePlan(Do.BeginDown, new[] {4, 3});
 			testSubject.ApplyTo(_database, _definedMigrations.ToLoaders());
 			_database.CurrentVersion.Result.Should().Be(2);
 		}
@@ -75,7 +75,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 		[Test]
 		public void ShouldCommitAllChangesToTheDatabase()
 		{
-			var testSubject = new ChangePlan(Do.Unapply, new[] {4, 3});
+			var testSubject = new ChangePlan(Do.BeginDown, new[] {4, 3});
 			testSubject.ApplyTo(_database, _definedMigrations.ToLoaders());
 			_database.CommittedTheChanges.Should().BeTrue();
 		}
@@ -83,7 +83,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 		[Test]
 		public void ShouldGiveGoodErrorWhenAttemptToApplyUndefinedMigration()
 		{
-			var testSubject = new ChangePlan(Do.Unapply, new[] {19});
+			var testSubject = new ChangePlan(Do.BeginDown, new[] {19});
 			Action application = () => testSubject.ApplyTo(_database, _definedMigrations.ToLoaders());
 			application.Should().Throw<TerminateProgramWithMessageException>().WithMessage(
 				@"Missing migration 19

@@ -4,14 +4,14 @@ namespace DbMigrate.Model.Support
 {
 	public abstract class Do
 	{
-		public static Do Apply = new _Apply();
-		public static Do Unapply = new _Unapply();
+		public static Do BeginUp = new _BeginUp();
+		public static Do BeginDown = new _BeginDown();
 
 		public abstract void Execute(IDatabase target, MigrationSpecification migration);
 		public abstract void SetResultingVersion(IDatabase database, int lastMigrationVersionApplied);
 		public abstract string UserMessageFor(int version);
 
-		private class _Apply : Do
+		private class _BeginUp : Do
 		{
 			public override void Execute(IDatabase target, MigrationSpecification migration)
 			{
@@ -34,7 +34,7 @@ namespace DbMigrate.Model.Support
 			}
 		}
 
-		private class _Unapply : Do
+		private class _BeginDown : Do
 		{
 			public override void Execute(IDatabase target, MigrationSpecification migration)
 			{

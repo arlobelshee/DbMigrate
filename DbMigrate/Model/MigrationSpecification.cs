@@ -5,18 +5,18 @@ namespace DbMigrate.Model
 {
 	public class MigrationSpecification
 	{
-		public MigrationSpecification(int version, string name, string apply, string unapply)
-			: this(version, name, apply, unapply, string.Empty, string.Empty)
+		public MigrationSpecification(int version, string name, string beginUp, string beginDown)
+			: this(version, name, beginUp, beginDown, string.Empty, string.Empty)
 		{
 		}
 
-		public MigrationSpecification(int version, string name, string apply, string unapply, string insertTestData,
+		public MigrationSpecification(int version, string name, string beginUp, string beginDown, string insertTestData,
 			string deleteTestData)
 		{
 			Version = version;
 			Name = name;
-			Apply = apply;
-			Unapply = unapply;
+			BeginUp = beginUp;
+			BeginDown = beginDown;
 			InsertTestData = insertTestData;
 			DeleteTestData = deleteTestData;
 			Validate();
@@ -24,15 +24,15 @@ namespace DbMigrate.Model
 
 		public MigrationSpecification(MigrationFile migrationFile)
 			: this(
-				migrationFile.Version, migrationFile.Name, migrationFile.Apply, migrationFile.Unapply, migrationFile.InsertTestData,
+				migrationFile.Version, migrationFile.Name, migrationFile.BeginUp, migrationFile.BeginDown, migrationFile.InsertTestData,
 				migrationFile.DeleteTestData)
 		{
 		}
 
 		public int Version { get; }
 		public string Name { get; }
-		public string Apply { get; }
-		public string Unapply { get; }
+		public string BeginUp { get; }
+		public string BeginDown { get; }
 		public string InsertTestData { get; }
 		public string DeleteTestData { get; }
 

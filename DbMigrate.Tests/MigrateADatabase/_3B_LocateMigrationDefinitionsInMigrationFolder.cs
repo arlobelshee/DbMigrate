@@ -30,7 +30,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 			var result = testSubject.LoadMigrationIfPresent(1);
 			result.Should().NotBeNull();
 			result.Version.Should().Be(1);
-			result.Apply.Should().Be("create table Foo;");
+			result.BeginUp.Should().Be("create table Foo;");
 		}
 
 		[Test]

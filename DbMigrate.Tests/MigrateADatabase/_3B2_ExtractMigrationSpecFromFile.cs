@@ -44,7 +44,7 @@ drop table Foo;
 		public void LoadingFileShouldFindDowngradeScript()
 		{
 			var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
-			testSubject.Unapply.Should().Be("drop table Foo;");
+			testSubject.BeginDown.Should().Be("drop table Foo;");
 		}
 
 		[Test]
@@ -72,7 +72,7 @@ drop table Foo;
 		public void LoadingFileShouldFindUpgradeScript()
 		{
 			var testSubject = new MigrationSpecification(new MigrationFile(new StringReader(TrivialMigration), ValidFileName));
-			testSubject.Apply.Should().Be("create table Foo;");
+			testSubject.BeginUp.Should().Be("create table Foo;");
 		}
 
 		[Test]

@@ -50,7 +50,7 @@ namespace DbMigrate.Model.Support.Database
 		public void Apply(MigrationSpecification migration)
 		{
 			var tasks = new List<Task>();
-			RunSql(tasks, migration.Apply);
+			RunSql(tasks, migration.BeginUp);
 			if (IsTestDatabase)
 				RunSql(tasks, migration.InsertTestData);
 			Task.WaitAll(tasks.ToArray());
@@ -61,7 +61,7 @@ namespace DbMigrate.Model.Support.Database
 			var tasks = new List<Task>();
 			if (IsTestDatabase)
 				RunSql(tasks, migration.DeleteTestData);
-			RunSql(tasks, migration.Unapply);
+			RunSql(tasks, migration.BeginDown);
 			Task.WaitAll(tasks.ToArray());
 		}
 

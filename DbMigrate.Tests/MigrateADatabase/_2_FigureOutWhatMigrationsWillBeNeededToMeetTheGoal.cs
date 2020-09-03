@@ -24,12 +24,12 @@ namespace DbMigrate.Tests.MigrateADatabase
 
 		private static ChangePlan Apply(params int[] versions)
 		{
-			return new ChangePlan(Do.Apply, versions);
+			return new ChangePlan(Do.BeginUp, versions);
 		}
 
 		private static ChangePlan Unapply(params int[] versions)
 		{
-			return new ChangePlan(Do.Unapply, versions);
+			return new ChangePlan(Do.BeginDown, versions);
 		}
 
 		[Test]

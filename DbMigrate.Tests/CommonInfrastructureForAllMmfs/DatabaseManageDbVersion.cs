@@ -69,8 +69,8 @@ insert into __database_info(version_number) values(0);";
 			testSubject.Version.Should().Be(0);
 			testSubject.InsertTestData.Should().Be(string.Empty);
 			testSubject.DeleteTestData.Should().Be(string.Empty);
-			testSubject.Apply.Should().Be(CreateVersionInfoTableSql);
-			testSubject.Unapply.Should().Be(DropVersionInfoTableSql);
+			testSubject.BeginUp.Should().Be(CreateVersionInfoTableSql);
+			testSubject.BeginDown.Should().Be(DropVersionInfoTableSql);
 		}
 	}
 }

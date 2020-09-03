@@ -42,7 +42,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 			var testSubject = new DatabaseRemote(tranection, DbEngine.None);
 			testSubject.Apply(Migration2);
 			testSubject.Apply(Migration3);
-			tranection.SqlExecuted.Should().Equal(new[] {Migration2.Apply, Migration3.Apply});
+			tranection.SqlExecuted.Should().Equal(new[] {Migration2.BeginUp, Migration3.BeginUp});
 		}
 
 		[Test]
@@ -70,7 +70,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 			var testSubject = new DatabaseRemote(tranection, DbEngine.None);
 			testSubject.Unapply(Migration3);
 			testSubject.Unapply(Migration2);
-			tranection.SqlExecuted.Should().Equal(new[] {Migration3.Unapply, Migration2.Unapply});
+			tranection.SqlExecuted.Should().Equal(new[] {Migration3.BeginDown, Migration2.BeginDown});
 		}
 	}
 }
