@@ -9,12 +9,13 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 	public class DatabaseManageDbVersion
 	{
 		private const string CreateVersionInfoTableSql =
-			@"create table __database_info(
-  version_number int
+            @"create table __database_info(
+  min_version_number int,
+  max_version_number int
 );
-insert into __database_info(version_number) values(0);";
+insert into __database_info(min_version_number, max_version_number) values(0, 0);";
 
-		private const string UpdateToVersion9Sql = "update __database_info set version_number = 9;";
+		private const string UpdateToVersion9Sql = "update __database_info set max_version_number = 9;";
 		private const string DropVersionInfoTableSql = "drop table __database_info;";
 
 		[Test]

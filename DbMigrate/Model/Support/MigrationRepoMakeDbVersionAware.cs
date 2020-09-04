@@ -22,9 +22,10 @@ namespace DbMigrate.Model.Support
 		{
 			const string createVersionInfoTableSql =
 				@"create table __database_info(
-  version_number int
+  min_version_number int,
+  max_version_number int
 );
-insert into __database_info(version_number) values(0);";
+insert into __database_info(min_version_number, max_version_number) values(0, 0);";
 			const string dropVersionInfoTableSql = "drop table __database_info;";
 			return new MigrationSpecification(0, "0_add_version_awareness", createVersionInfoTableSql, dropVersionInfoTableSql);
 		}
