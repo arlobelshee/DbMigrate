@@ -18,51 +18,60 @@ insert into __database_info(version_number) values(0);";
 		private const string DropVersionInfoTableSql = "drop table __database_info;";
 
 		[Test]
-		public void DatabaseShouldKnowItsCurrentVersion()
-		{
-			var tracer = new TrannectionTraceOnly();
-			var testSubject = new DatabaseRemote(tracer, DbEngine.SqlLite);
-			tracer.ExecuteScalarHandler =
-				sql =>
-				{
-					sql.Should().Be(DbEngine.SqlLite.RequestVersionSql);
-					return 6;
-				};
-			testSubject.CurrentVersion.Result.Should().Be(6);
-		}
+		public void DatabaseShouldKnowItsMaxVersion()
+        {
+            var tracer = new TrannectionTraceOnly
+            {
+                ExecuteScalarHandler = sql =>
+                    {
+                        sql.Should().Be(DbEngine.SqlLite.RequestVersionSql);
+                        return 6;
+                    }
+            };
+            using (var testSubject = new DatabaseRemote(tracer, DbEngine.SqlLite))
+            {
+                testSubject.MaxVersion.Result.Should().Be(6);
+            }
+        }
 
-		[Test]
-		public void DatabaseSimulatorShouldBeAbleToSetItsVersion()
-		{
-			var testSubject = new DatabaseLocalMemory();
-			testSubject.SetCurrentVersionTo(33).Wait();
-			testSubject.CurrentVersion.Result.Should().Be(33);
-		}
+        [Test]
+		public void DatabaseSimulatorShouldBeAbleToSetItsMaxVersion()
+        {
+            using (var testSubject = new DatabaseLocalMemory())
+            {
+                testSubject.SetMaxVersionTo(33).Wait();
+                testSubject.MaxVersion.Result.Should().Be(33);
+            }
+        }
 
-		[Test]
+        [Test]
 		public void DatabaseSimulatorShouldStartVersionUnaware()
-		{
-			var testSubject = new DatabaseLocalMemory();
-			testSubject.CurrentVersion.Result.Should().Be(-1);
-		}
+        {
+            using (var testSubject = new DatabaseLocalMemory())
+            {
+                testSubject.MaxVersion.Result.Should().Be(-1);
+            }
+        }
 
-		[Test]
+        [Test]
 		public void ShouldBeAbleToGoToNewVersion()
-		{
-			var tracer = new TrannectionTraceOnly();
-			var testSubject = new DatabaseRemote(tracer, DbEngine.None);
-			var hasBeenCalled = false;
-			tracer.ExecuteNonQueryHandler =
-				sql =>
-				{
-					sql.Should().Be(UpdateToVersion9Sql);
-					hasBeenCalled = true;
-				};
-			testSubject.SetCurrentVersionTo(9).Wait();
-			hasBeenCalled.Should().BeTrue();
-		}
+        {
+            var tracer = new TrannectionTraceOnly();
+            using (var testSubject = new DatabaseRemote(tracer, DbEngine.None))
+            {
+                var hasBeenCalled = false;
+                tracer.ExecuteNonQueryHandler =
+                    sql =>
+                    {
+                        sql.Should().Be(UpdateToVersion9Sql);
+                        hasBeenCalled = true;
+                    };
+                testSubject.SetMaxVersionTo(9).Wait();
+                hasBeenCalled.Should().BeTrue();
+            }
+        }
 
-		[Test]
+        [Test]
 		public void SpecialMigrationShouldKnowHowToApply()
 		{
 			var testSubject = new MigrationRepoMakeDbVersionAware().LoadMigrationIfPresent(0);

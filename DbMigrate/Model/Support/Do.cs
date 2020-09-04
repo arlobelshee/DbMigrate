@@ -15,12 +15,12 @@ namespace DbMigrate.Model.Support
 		{
 			public override void Execute(IDatabase target, MigrationSpecification migration)
 			{
-				target.Apply(migration);
+				target.BeginUpgrade(migration);
 			}
 
 			public override void SetResultingVersion(IDatabase database, int lastMigrationVersionApplied)
 			{
-				database.SetCurrentVersionTo(lastMigrationVersionApplied).Wait();
+				database.SetMaxVersionTo(lastMigrationVersionApplied).Wait();
 			}
 
 			public override string UserMessageFor(int version)
@@ -38,12 +38,12 @@ namespace DbMigrate.Model.Support
 		{
 			public override void Execute(IDatabase target, MigrationSpecification migration)
 			{
-				target.Unapply(migration);
+				target.BeginDowngrade(migration);
 			}
 
 			public override void SetResultingVersion(IDatabase database, int lastMigrationVersionApplied)
 			{
-				database.SetCurrentVersionTo(lastMigrationVersionApplied - 1).Wait();
+				database.SetMaxVersionTo(lastMigrationVersionApplied - 1).Wait();
 			}
 
 			public override string UserMessageFor(int version)

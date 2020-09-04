@@ -30,7 +30,7 @@ namespace DbMigrate.Model.Support.Database
 
 		public bool IsTestDatabase { get; set; }
 
-		public Task<int> CurrentVersion => Tranection.ExecuteScalar<int>(_dbEngine.RequestVersionSql);
+		public Task<int> MaxVersion => Tranection.ExecuteScalar<int>(_dbEngine.RequestVersionSql);
 
 		public void Commit()
 		{
@@ -42,12 +42,12 @@ namespace DbMigrate.Model.Support.Database
 			Tranection.Dispose();
 		}
 
-		public Task SetCurrentVersionTo(int targetVersion)
+		public Task SetMaxVersionTo(int targetVersion)
 		{
 			return Tranection.ExecuteNonQuery(UpdateVersionSqlFormat.Format(targetVersion));
 		}
 
-		public void Apply(MigrationSpecification migration)
+		public void BeginUpgrade(MigrationSpecification migration)
 		{
 			var tasks = new List<Task>();
 			RunSql(tasks, migration.BeginUp);
@@ -56,7 +56,7 @@ namespace DbMigrate.Model.Support.Database
 			Task.WaitAll(tasks.ToArray());
 		}
 
-		public void Unapply(MigrationSpecification migration)
+		public void BeginDowngrade(MigrationSpecification migration)
 		{
 			var tasks = new List<Task>();
 			if (IsTestDatabase)

@@ -12,7 +12,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 		public void ShouldChooseToGoFromDatabaseCurrentVersionToTarget()
 		{
 			var database = new DatabaseLocalMemory();
-			database.SetCurrentVersionTo(33);
+			database.SetMaxVersionTo(33);
 			Target.FigureOutTheGoal(database, -9).Should().BeEquivalentTo(new {CurrentVersion = 33, TargetVersion = -9},
 				options => options.ExcludingMissingMembers());
 		}

@@ -9,7 +9,7 @@ namespace DbMigrate.Model.Support.Database
 		public DatabaseLocalMemory()
 		{
 			IsDisposed = false;
-			CurrentVersion = (-1).ToTask();
+			MaxVersion = (-1).ToTask();
 			AppliedMigrations = new List<MigrationSpecification>();
 			UnappliedMigrations = new List<MigrationSpecification>();
 		}
@@ -18,7 +18,7 @@ namespace DbMigrate.Model.Support.Database
 		public List<MigrationSpecification> AppliedMigrations { get; }
 		public List<MigrationSpecification> UnappliedMigrations { get; }
 		public bool CommittedTheChanges { get; private set; }
-		public Task<int> CurrentVersion { get; private set; }
+		public Task<int> MaxVersion { get; private set; }
 		public bool IsTestDatabase { get; set; }
 
 		public void Dispose()
@@ -31,18 +31,18 @@ namespace DbMigrate.Model.Support.Database
 			if (AppliedMigrations.Count + UnappliedMigrations.Count > 0) CommittedTheChanges = true;
 		}
 
-		public Task SetCurrentVersionTo(int targetVersion)
+		public Task SetMaxVersionTo(int targetVersion)
 		{
-			CurrentVersion = targetVersion.ToTask();
+			MaxVersion = targetVersion.ToTask();
 			return HelperMethods.NoOpAction();
 		}
 
-		public void Apply(MigrationSpecification migration)
+		public void BeginUpgrade(MigrationSpecification migration)
 		{
 			AppliedMigrations.Add(migration);
 		}
 
-		public void Unapply(MigrationSpecification migration)
+		public void BeginDowngrade(MigrationSpecification migration)
 		{
 			UnappliedMigrations.Add(migration);
 		}

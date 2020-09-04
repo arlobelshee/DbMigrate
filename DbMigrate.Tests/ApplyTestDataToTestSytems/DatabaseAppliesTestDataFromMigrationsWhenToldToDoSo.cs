@@ -46,8 +46,8 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
             var tranection = new TrannectionTraceOnly().BeginCapturing();
             using (var testSubject = new DatabaseRemote(tranection, DbEngine.None))
             {
-                testSubject.Apply(Migration2);
-                testSubject.Apply(Migration3);
+                testSubject.BeginUpgrade(Migration2);
+                testSubject.BeginUpgrade(Migration3);
             }
             tranection.SqlExecuted.Should().Equal(new[] { Migration2.BeginUp, Migration3.BeginUp });
         }
@@ -58,8 +58,8 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
             var tranection = new TrannectionTraceOnly().BeginCapturing();
             using (var testSubject = new DatabaseRemote(tranection, DbEngine.None) { IsTestDatabase = true })
             {
-                testSubject.Apply(Migration2);
-                testSubject.Apply(Migration3);
+                testSubject.BeginUpgrade(Migration2);
+                testSubject.BeginUpgrade(Migration3);
             }
             tranection.SqlExecuted.Should().Equal(new[]
                 {Migration2.BeginUp, Migration2.InsertTestData, Migration3.BeginUp, Migration3.InsertTestData});
@@ -71,7 +71,7 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
             var tranection = new TrannectionTraceOnly().BeginCapturing();
             using (var testSubject = new DatabaseRemote(tranection, DbEngine.None) { IsTestDatabase = true })
             {
-                testSubject.Apply(MigrationWithoutTestData);
+                testSubject.BeginUpgrade(MigrationWithoutTestData);
             }
             tranection.SqlExecuted.Should().Equal(new[] { MigrationWithoutTestData.BeginUp });
         }
@@ -82,8 +82,8 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
             var tranection = new TrannectionTraceOnly().BeginCapturing();
             using (var testSubject = new DatabaseRemote(tranection, DbEngine.None))
             {
-                testSubject.Unapply(Migration3);
-                testSubject.Unapply(Migration2);
+                testSubject.BeginDowngrade(Migration3);
+                testSubject.BeginDowngrade(Migration2);
             }
             tranection.SqlExecuted.Should().Equal(new[] { Migration3.BeginDown, Migration2.BeginDown });
         }
@@ -94,8 +94,8 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
             var tranection = new TrannectionTraceOnly().BeginCapturing();
             using (var testSubject = new DatabaseRemote(tranection, DbEngine.None) { IsTestDatabase = true })
             {
-                testSubject.Unapply(Migration3);
-                testSubject.Unapply(Migration2);
+                testSubject.BeginDowngrade(Migration3);
+                testSubject.BeginDowngrade(Migration2);
             }
             tranection.SqlExecuted.Should().Equal(new[]
                 {Migration3.DeleteTestData, Migration3.BeginDown, Migration2.DeleteTestData, Migration2.BeginDown});
@@ -107,7 +107,7 @@ namespace DbMigrate.Tests.ApplyTestDataToTestSytems
             var tranection = new TrannectionTraceOnly().BeginCapturing();
             using (var testSubject = new DatabaseRemote(tranection, DbEngine.None) { IsTestDatabase = true })
             {
-                testSubject.Unapply(MigrationWithoutTestData);
+                testSubject.BeginDowngrade(MigrationWithoutTestData);
             }
             tranection.SqlExecuted.Should().Equal(new[] { MigrationWithoutTestData.BeginDown });
         }

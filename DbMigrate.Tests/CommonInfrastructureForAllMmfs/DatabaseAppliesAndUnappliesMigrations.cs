@@ -21,8 +21,8 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		public void MemoryDatabaseShouldRecordMigrationsApplied()
 		{
 			var testSubject = new DatabaseLocalMemory();
-			testSubject.Apply(Migration2);
-			testSubject.Apply(Migration3);
+			testSubject.BeginUpgrade(Migration2);
+			testSubject.BeginUpgrade(Migration3);
 			testSubject.AppliedMigrations.Should().Equal(Migration2, Migration3);
 		}
 
@@ -30,8 +30,8 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		public void MemoryDatabaseShouldRecordMigrationsUnapplied()
 		{
 			var testSubject = new DatabaseLocalMemory();
-			testSubject.Unapply(Migration3);
-			testSubject.Unapply(Migration2);
+			testSubject.BeginDowngrade(Migration3);
+			testSubject.BeginDowngrade(Migration2);
 			testSubject.UnappliedMigrations.Should().Equal(Migration3, Migration2);
 		}
 
@@ -40,8 +40,8 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
 			var testSubject = new DatabaseRemote(tranection, DbEngine.None);
-			testSubject.Apply(Migration2);
-			testSubject.Apply(Migration3);
+			testSubject.BeginUpgrade(Migration2);
+			testSubject.BeginUpgrade(Migration3);
 			tranection.SqlExecuted.Should().Equal(new[] {Migration2.BeginUp, Migration3.BeginUp});
 		}
 
@@ -50,7 +50,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
 			var testSubject = new DatabaseRemote(tranection, DbEngine.None);
-			testSubject.Apply(MigrationEmpty);
+			testSubject.BeginUpgrade(MigrationEmpty);
 			tranection.SqlExecuted.Should().BeEmpty();
 		}
 
@@ -59,7 +59,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
 			var testSubject = new DatabaseRemote(tranection, DbEngine.None);
-			testSubject.Unapply(MigrationEmpty);
+			testSubject.BeginDowngrade(MigrationEmpty);
 			tranection.SqlExecuted.Should().BeEmpty();
 		}
 
@@ -68,8 +68,8 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		{
 			var tranection = new TrannectionTraceOnly().BeginCapturing();
 			var testSubject = new DatabaseRemote(tranection, DbEngine.None);
-			testSubject.Unapply(Migration3);
-			testSubject.Unapply(Migration2);
+			testSubject.BeginDowngrade(Migration3);
+			testSubject.BeginDowngrade(Migration2);
 			tranection.SqlExecuted.Should().Equal(new[] {Migration3.BeginDown, Migration2.BeginDown});
 		}
 	}
