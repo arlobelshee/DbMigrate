@@ -9,21 +9,20 @@ namespace DbMigrate.Model.Support.Database
 {
     public class DbEngine
     {
-        public static DbEngine SqlServer = new DbEngine("System.Data.SqlClient", @"
+        public static DbEngine SqlServer = new DbEngine("System.Data.SqlClient", SqlClientFactory.Instance, @"
 if exists(select * from sys.objects where name = '__database_info' and type in ('U'))
 begin
 	select top 1 max_version_number from __database_info;
 end
-else
-begin
+else begin
 	select -1;
-end", SqlClientFactory.Instance);
+end");
 
-        public static DbEngine SqlLite = new DbEngine("System.Data.SQLite", @"
+        public static DbEngine SqlLite = new DbEngine("System.Data.SQLite", SQLiteFactory.Instance, @"
 select case (select count(*) from sqlite_master where type='table' and name='__database_info' collate nocase)
 when 1 then (select top 1 max_version_number from __database_info)
 else -1
-end", SQLiteFactory.Instance);
+end");
 
         public static DbEngine None = new DbEngine("", null, null);
         private static readonly Dictionary<string, DbEngine> KnownEngines;
@@ -37,8 +36,8 @@ end", SQLiteFactory.Instance);
             KnownEngines = new Dictionary<string, DbEngine> { { "sqlite", SqlLite }, { "sqlserver", SqlServer } };
         }
 
-        private DbEngine(string providerFactoryName, string requestVersionSql,
-            DbProviderFactory factory)
+        private DbEngine(string providerFactoryName, DbProviderFactory factory,
+            string requestVersionSql)
         {
             ProviderFactoryName = providerFactoryName;
             RequestVersionSql = requestVersionSql;
