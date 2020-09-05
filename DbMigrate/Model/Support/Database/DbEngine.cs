@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Data.SQLite;
+using System.Linq;
 using DbMigrate.UI;
 
 namespace DbMigrate.Model.Support.Database
@@ -18,18 +19,17 @@ else begin
 	select -1;
 end");
 
-        public static DbEngine SqlLite = new DbEngine("System.Data.SQLite", SQLiteFactory.Instance, @"
-select case (select count(*) from sqlite_master where type='table' and name='__database_info' collate nocase)
-when 1 then (select top 1 max_version_number from __database_info)
-else -1
-end");
+        public static DbEngine SqlLite = new DbEngine("System.Data.SQLite", SQLiteFactory.Instance,
+            @"select case (select count(*) from sqlite_master where type='table' and name='__database_info' collate nocase)
+    when 0 then -1 else NULL end",
+            @"select max_version_number from __database_info limit 1");
 
-        public static DbEngine None = new DbEngine("", null, null);
+        public static DbEngine None = new DbEngine("", null);
         private static readonly Dictionary<string, DbEngine> KnownEngines;
 
         private readonly DbProviderFactory _factory;
         public readonly string ProviderFactoryName;
-        public readonly string RequestVersionSql;
+        public readonly List<string> RequestVersionSql;
 
         static DbEngine()
         {
@@ -37,10 +37,10 @@ end");
         }
 
         private DbEngine(string providerFactoryName, DbProviderFactory factory,
-            string requestVersionSql)
+            params string[] requestVersionSql)
         {
             ProviderFactoryName = providerFactoryName;
-            RequestVersionSql = requestVersionSql;
+            RequestVersionSql = requestVersionSql.ToList();
             _factory = factory;
         }
 

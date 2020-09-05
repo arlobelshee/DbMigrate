@@ -38,6 +38,7 @@ namespace DbMigrate.Model.Support.Database
 		public void Dispose()
 		{
 			IsDisposed = true;
+			GC.SuppressFinalize(this);
 		}
 
 		public Task<T> ExecuteScalar<T>(string sql)

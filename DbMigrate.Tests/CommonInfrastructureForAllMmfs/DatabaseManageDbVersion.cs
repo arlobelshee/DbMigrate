@@ -25,13 +25,13 @@ insert into __database_info(min_version_number, max_version_number) values(0, 0)
             {
                 ExecuteScalarHandler = sql =>
                     {
-                        sql.Should().Be(DbEngine.SqlLite.RequestVersionSql);
-                        return 6;
+                        sql.Should().Be(DbEngine.SqlLite.RequestVersionSql[0]);
+                        return 6L;
                     }
             };
             using (var testSubject = new DatabaseRemote(tracer, DbEngine.SqlLite))
             {
-                testSubject.MaxVersion.Result.Should().Be(6);
+                testSubject.GetMaxVersion().Result.Should().Be(6L);
             }
         }
 
@@ -41,7 +41,7 @@ insert into __database_info(min_version_number, max_version_number) values(0, 0)
             using (var testSubject = new DatabaseLocalMemory())
             {
                 testSubject.SetMaxVersionTo(33).Wait();
-                testSubject.MaxVersion.Result.Should().Be(33);
+                testSubject.GetMaxVersion().Result.Should().Be(33);
             }
         }
 
@@ -50,7 +50,7 @@ insert into __database_info(min_version_number, max_version_number) values(0, 0)
         {
             using (var testSubject = new DatabaseLocalMemory())
             {
-                testSubject.MaxVersion.Result.Should().Be(-1);
+                testSubject.GetMaxVersion().Result.Should().Be(-1);
             }
         }
 

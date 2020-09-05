@@ -30,9 +30,17 @@ namespace DbMigrate.Model.Support.Database
 
 		public bool IsTestDatabase { get; set; }
 
-		public Task<int> MaxVersion => Tranection.ExecuteScalar<int>(_dbEngine.RequestVersionSql);
+        public async Task<long> GetMaxVersion()
+        {
+            foreach (var attempt in _dbEngine.RequestVersionSql)
+            {
+                var result = await Tranection.ExecuteScalar<long?>(attempt);
+				if (result.HasValue) return result.Value;
+            }
+			return -2;
+        }
 
-		public void Commit()
+        public void Commit()
 		{
 			Tranection.Commit();
 		}
@@ -40,9 +48,10 @@ namespace DbMigrate.Model.Support.Database
 		public void Dispose()
 		{
 			Tranection.Dispose();
+			GC.SuppressFinalize(this);
 		}
 
-		public Task SetMaxVersionTo(int targetVersion)
+		public Task SetMaxVersionTo(long targetVersion)
 		{
 			return Tranection.ExecuteNonQuery(UpdateVersionSqlFormat.Format("max", targetVersion));
 		}

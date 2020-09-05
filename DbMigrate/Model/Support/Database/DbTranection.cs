@@ -23,6 +23,7 @@ namespace DbMigrate.Model.Support.Database
 			_transaction = null;
 			_connection?.Close();
 			_connection = null;
+			GC.SuppressFinalize(this);
 		}
 
 		public bool IsOpen => _connection != null;
@@ -84,6 +85,7 @@ namespace DbMigrate.Model.Support.Database
 		{
 			reader.Read();
 			var value = reader.GetValue(0);
+			if(value is DBNull) { value = null; }
             var result = (T) value;
 			reader.Close();
 			return result;

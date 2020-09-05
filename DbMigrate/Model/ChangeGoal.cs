@@ -4,14 +4,14 @@ namespace DbMigrate.Model
 {
 	public class ChangeGoal : IEquatable<ChangeGoal>
 	{
-		public ChangeGoal(int currentVersion, int? targetVersion)
+		public ChangeGoal(long currentVersion, long? targetVersion)
 		{
 			CurrentVersion = currentVersion;
 			TargetVersion = targetVersion;
 		}
 
-		public int CurrentVersion { get; }
-		public int? TargetVersion { get; }
+		public long CurrentVersion { get; }
+		public long? TargetVersion { get; }
 
 		public bool Equals(ChangeGoal other)
 		{
@@ -31,7 +31,7 @@ namespace DbMigrate.Model
 			{
 				var result = CurrentVersion;
 				result = (result * 397) ^ (TargetVersion ?? -1);
-				return result;
+				return (int) result;
 			}
 		}
 

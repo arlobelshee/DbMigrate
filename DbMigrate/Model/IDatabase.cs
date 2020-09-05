@@ -5,10 +5,11 @@ namespace DbMigrate.Model
 {
 	public interface IDatabase : IDisposable
 	{
-		Task<int> MaxVersion { get; }
-		bool IsTestDatabase { get; set; }
+        Task<long> GetMaxVersion();
+
+        bool IsTestDatabase { get; set; }
 		void Commit();
-		Task SetMaxVersionTo(int targetVersion);
+		Task SetMaxVersionTo(long targetVersion);
 		void BeginUpgrade(MigrationSpecification migration);
 		void BeginDowngrade(MigrationSpecification migration);
 	}

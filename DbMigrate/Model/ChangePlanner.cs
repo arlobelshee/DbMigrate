@@ -42,23 +42,23 @@ namespace DbMigrate.Model
 			return new MigrationSet(plan, database, migrationLoaders);
 		}
 
-		private static ChangePlan PlanToGetFromCurrentToTarget(ChangeGoal spec, int targetVersion)
+		private static ChangePlan PlanToGetFromCurrentToTarget(ChangeGoal spec, long targetVersion)
 		{
 			if (targetVersion >= spec.CurrentVersion)
 			{
 				var firstMigrationToApply = spec.CurrentVersion + 1;
 				return new ChangePlan(Do.BeginUp,
-					Enumerable.Range(firstMigrationToApply, targetVersion - firstMigrationToApply + 1));
+					Enumerable.Range((int)firstMigrationToApply, (int)(targetVersion - firstMigrationToApply + 1)));
 			}
 			else
 			{
 				var firstMigrationToApply = spec.CurrentVersion;
 				return new ChangePlan(Do.BeginDown,
-					Enumerable.Range(targetVersion + 1, firstMigrationToApply - targetVersion).Reverse());
+					Enumerable.Range((int)(targetVersion + 1), (int)(firstMigrationToApply - targetVersion)).Reverse());
 			}
 		}
 
-		private static int FindTrueTargetVersion(int? targetVersionNumber, IEnumerable<IMigrationLoader> migrationLoaders)
+		private static long FindTrueTargetVersion(long? targetVersionNumber, IEnumerable<IMigrationLoader> migrationLoaders)
 		{
 			var highestDefinedMigration = migrationLoaders.Max(l => l.MaxMigrationVersionFound);
 			if (targetVersionNumber == null)
@@ -68,7 +68,7 @@ namespace DbMigrate.Model
 			return targetVersionNumber.Value;
 		}
 
-		private static string DescribePlan(int currentVersion, int targetVersion)
+		private static string DescribePlan(long currentVersion, long targetVersion)
 		{
 			if (currentVersion == -1)
 				return string.Format("Migrating version-unaware database to version {0}.", targetVersion);

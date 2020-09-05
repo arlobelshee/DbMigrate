@@ -1,4 +1,5 @@
 ﻿using System;
+using DbMigrate.Model.Support;
 using DbMigrate.Model.Support.Database;
 using FluentAssertions;
 using NUnit.Framework;
@@ -98,6 +99,21 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 			{
 				testSubject.ExecuteScalar<long>("select 1;").Result.Should().Be(1);
 			}
+		}
+
+		[Test]
+		public void SqlToBecomeVersionAwareUpdateVersionAndReadVersionShouldAllWork()
+		{
+			var tranection = new DbTranection(DbToUse, ConnectionStringToUse);
+			using (var testSubject = new DatabaseRemote(tranection, DbToUse))
+			{
+				testSubject.GetMaxVersion().Result.Should().Be(-1);
+                var becomeVersionAware = new MigrationRepoMakeDbVersionAware().LoadMigrationIfPresent(0);
+                testSubject.BeginUpgrade(becomeVersionAware);
+                testSubject.GetMaxVersion().Result.Should().Be(0);
+                testSubject.SetMaxVersionTo(3);
+                testSubject.GetMaxVersion().Result.Should().Be(3);
+            }
 		}
 
 		[Test]

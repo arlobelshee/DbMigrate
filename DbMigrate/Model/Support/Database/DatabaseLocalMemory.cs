@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DbMigrate.Util;
 
@@ -9,7 +10,7 @@ namespace DbMigrate.Model.Support.Database
 		public DatabaseLocalMemory()
 		{
 			IsDisposed = false;
-			MaxVersion = (-1).ToTask();
+            SetMaxVersion((-1L).ToTask());
 			AppliedMigrations = new List<MigrationSpecification>();
 			UnappliedMigrations = new List<MigrationSpecification>();
 		}
@@ -18,12 +19,25 @@ namespace DbMigrate.Model.Support.Database
 		public List<MigrationSpecification> AppliedMigrations { get; }
 		public List<MigrationSpecification> UnappliedMigrations { get; }
 		public bool CommittedTheChanges { get; private set; }
-		public Task<int> MaxVersion { get; private set; }
-		public bool IsTestDatabase { get; set; }
+
+        private Task<long> maxVersion;
+
+        public Task<long> GetMaxVersion()
+        {
+            return maxVersion;
+        }
+
+        private void SetMaxVersion(Task<long> value)
+        {
+            maxVersion = value;
+        }
+
+        public bool IsTestDatabase { get; set; }
 
 		public void Dispose()
 		{
 			IsDisposed = true;
+			GC.SuppressFinalize(this);
 		}
 
 		public void Commit()
@@ -31,9 +45,9 @@ namespace DbMigrate.Model.Support.Database
 			if (AppliedMigrations.Count + UnappliedMigrations.Count > 0) CommittedTheChanges = true;
 		}
 
-		public Task SetMaxVersionTo(int targetVersion)
+		public Task SetMaxVersionTo(long targetVersion)
 		{
-			MaxVersion = targetVersion.ToTask();
+            SetMaxVersion(targetVersion.ToTask());
 			return HelperMethods.NoOpAction();
 		}
 
