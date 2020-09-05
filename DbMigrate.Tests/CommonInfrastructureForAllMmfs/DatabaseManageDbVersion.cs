@@ -10,8 +10,8 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 	{
 		private const string CreateVersionInfoTableSql =
             @"create table __database_info(
-  min_version_number int,
-  max_version_number int
+  min_version_number long,
+  max_version_number long
 );
 insert into __database_info(min_version_number, max_version_number) values(0, 0);";
 
