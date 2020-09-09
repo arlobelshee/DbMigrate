@@ -20,6 +20,8 @@ namespace DbMigrate.Model.Support.Database
 		[NotNull]
 		public Func<string, object> ExecuteScalarHandler { private get; set; } = s => { return null; };
 		[NotNull]
+		public Func<string, object> ExecuteStructureHandler { private get; set; } = s => { return null; };
+		[NotNull]
 		public Action<string> ExecuteNonQueryHandler { private get; set; } = s => { };
 		public bool IsDisposed { get; private set; }
 		public bool IsCommitted { get; private set; }
@@ -50,6 +52,17 @@ namespace DbMigrate.Model.Support.Database
 				return default(T).ToTask();
 			}
 			return HelperMethods.AsTask(() => (T) ExecuteScalarHandler(sql));
+		}
+
+		public Task<T> ExecuteStructure<T>([NotNull] string sql, [NotNull] Func<object[], T> deserialize)
+		{
+			IsCommitted = false;
+			if (_capturing)
+			{
+				SqlExecuted.Add(sql);
+				return default(T).ToTask();
+			}
+			return HelperMethods.AsTask(() => (T) ExecuteStructureHandler(sql));
 		}
 
 		public Task<int> ExecuteNonQuery(string sql)

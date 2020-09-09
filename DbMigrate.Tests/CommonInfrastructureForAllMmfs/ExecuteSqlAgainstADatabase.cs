@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
 using DbMigrate.Model.Support;
 using DbMigrate.Model.Support.Database;
 using FluentAssertions;
@@ -81,6 +83,17 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		}
 
 		[Test]
+		public void SqlTrannectionShouldExecuteStructuredQuery()
+		{
+			using (var testSubject = new DbTranection(DbToUse, ConnectionStringToUse))
+			{
+				testSubject.ExecuteStructure("select 3, 4",
+					values => new DatabaseVersion((long)values[0], (long)values[1]))
+					.Result.Should().Be(new DatabaseVersion(3, 4));
+			}
+		}
+
+		[Test]
 		public void SqlTrannectionShouldExecuteNonQuery()
 		{
 			using (var testSubject = new DbTranection(DbToUse, ConnectionStringToUse))
@@ -93,7 +106,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		}
 
 		[Test]
-		public void SqlTrannectionShouldExecuteSqlOnItsTarget()
+		public void SqlTrannectionShouldExecuteScalarOnItsTarget()
 		{
 			using (var testSubject = new DbTranection(DbToUse, ConnectionStringToUse))
 			{
@@ -102,7 +115,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 		}
 
 		[Test]
-		public void SqlToBecomeVersionAwareUpdateVersionAndReadVersionShouldAllWork()
+		public void DatabaseShouldExecuteEachOfTheBuiltInCommandsCorrectly()
 		{
 			var tranection = new DbTranection(DbToUse, ConnectionStringToUse);
 			using (var testSubject = new DatabaseRemote(tranection, DbToUse))

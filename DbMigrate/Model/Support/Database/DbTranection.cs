@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace DbMigrate.Model.Support.Database
@@ -89,6 +90,31 @@ namespace DbMigrate.Model.Support.Database
             var result = (T) value;
 			reader.Close();
 			return result;
+		}
+
+		private static T ReadStructure<T>([NotNull] IDataReader reader, [NotNull] Func<object[], T> deserialize)
+		{
+			reader.Read();
+			var values = new object[reader.FieldCount];
+			var _ = reader.GetValues(values);
+			for(int i=0; i<values.Length; ++i)
+            {
+				if (values[i] is DBNull) { values[i] = null; }
+			}
+            var result = deserialize(values);
+			reader.Close();
+			return result;
+		}
+
+        public Task<T> ExecuteStructure<T>([NotNull] string sql, [NotNull] Func<object[], T> deserialize)
+        {
+			var command = GetCommand(sql);
+			return command.ExecuteReaderAsync()
+				.ContinueWith(t =>
+				{
+					command.Dispose(); // before attempting to check the result, in case there was an exception.
+					return ReadStructure(t.Result, deserialize);
+				});
 		}
 	}
 }
