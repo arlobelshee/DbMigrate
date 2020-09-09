@@ -32,7 +32,7 @@ insert into __database_info(min_version_number, max_version_number) values(0, 0)
             };
             using (var testSubject = new DatabaseRemote(tracer, DbEngine.SqlLite))
             {
-                testSubject.GetMaxVersion().Result.Should().Be(6L);
+                testSubject.GetVersion().Result.Should().Be(new DatabaseVersion(3, 6));
             }
         }
 
@@ -42,7 +42,7 @@ insert into __database_info(min_version_number, max_version_number) values(0, 0)
             using (var testSubject = new DatabaseLocalMemory())
             {
                 testSubject.SetMaxVersionTo(33).Wait();
-                testSubject.GetMaxVersion().Result.Should().Be(33);
+                testSubject.GetVersion().Result.Should().Be(new DatabaseVersion(-1, 33));
             }
         }
 
@@ -51,7 +51,7 @@ insert into __database_info(min_version_number, max_version_number) values(0, 0)
         {
             using (var testSubject = new DatabaseLocalMemory())
             {
-                testSubject.GetMaxVersion().Result.Should().Be(-1);
+                testSubject.GetVersion().Result.Should().Be(new DatabaseVersion(-1, -1));
             }
         }
 

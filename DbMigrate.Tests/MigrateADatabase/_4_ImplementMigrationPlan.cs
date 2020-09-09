@@ -53,7 +53,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 		{
 			var testSubject = new ChangePlan(Do.BeginUp, new[] {2, 3});
 			testSubject.ApplyTo(_database, _definedMigrations.ToLoaders());
-			_database.GetMaxVersion().Result.Should().Be(3);
+			_database.GetVersion().Result.Max.Should().Be(3);
 		}
 
 		[Test]
@@ -69,7 +69,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 		{
 			var testSubject = new ChangePlan(Do.BeginDown, new[] {4, 3});
 			testSubject.ApplyTo(_database, _definedMigrations.ToLoaders());
-			_database.GetMaxVersion().Result.Should().Be(2);
+			_database.GetVersion().Result.Max.Should().Be(2);
 		}
 
 		[Test]

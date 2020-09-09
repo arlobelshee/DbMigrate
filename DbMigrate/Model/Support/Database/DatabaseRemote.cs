@@ -30,14 +30,14 @@ namespace DbMigrate.Model.Support.Database
 
 		public bool IsTestDatabase { get; set; }
 
-        public async Task<long> GetMaxVersion()
+        public async Task<DatabaseVersion> GetVersion()
         {
             foreach (var attempt in _dbEngine.RequestVersionSql)
             {
                 var result = await Tranection.ExecuteStructure(attempt, values => new DatabaseVersion((long)values[0], (long)values[1]));
-				if (result.IsKnown) return result.Max;
+				if (result.IsKnown) return result;
             }
-			return -2;
+			return new DatabaseVersion(DatabaseVersion.NOT_YET_KNOWN, DatabaseVersion.NOT_YET_KNOWN);
         }
 
         public void Commit()

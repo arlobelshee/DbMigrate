@@ -30,7 +30,7 @@ namespace DbMigrate.Model
 
 		public static ChangeGoal FigureOutTheGoal(IDatabase database, int? targetVersion)
 		{
-			return new ChangeGoal(database.GetMaxVersion().Result, targetVersion);
+			return new ChangeGoal(database.GetVersion().Result.Max, targetVersion);
 		}
 	}
 }

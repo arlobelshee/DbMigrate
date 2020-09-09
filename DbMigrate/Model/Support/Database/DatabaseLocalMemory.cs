@@ -10,7 +10,7 @@ namespace DbMigrate.Model.Support.Database
 		public DatabaseLocalMemory()
 		{
 			IsDisposed = false;
-            SetMaxVersion((-1L).ToTask());
+			version = new DatabaseVersion(-1L, -1L);
 			AppliedMigrations = new List<MigrationSpecification>();
 			UnappliedMigrations = new List<MigrationSpecification>();
 		}
@@ -20,16 +20,11 @@ namespace DbMigrate.Model.Support.Database
 		public List<MigrationSpecification> UnappliedMigrations { get; }
 		public bool CommittedTheChanges { get; private set; }
 
-        private Task<long> maxVersion;
+        private DatabaseVersion version;
 
-        public Task<long> GetMaxVersion()
+        public Task<DatabaseVersion> GetVersion()
         {
-            return maxVersion;
-        }
-
-        private void SetMaxVersion(Task<long> value)
-        {
-            maxVersion = value;
+            return version.ToTask();
         }
 
         public bool IsTestDatabase { get; set; }
@@ -47,7 +42,7 @@ namespace DbMigrate.Model.Support.Database
 
 		public Task SetMaxVersionTo(long targetVersion)
 		{
-            SetMaxVersion(targetVersion.ToTask());
+			version = version.WithMax(targetVersion);
 			return HelperMethods.NoOpAction();
 		}
 

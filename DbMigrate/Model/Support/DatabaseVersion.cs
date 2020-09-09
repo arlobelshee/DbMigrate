@@ -30,5 +30,15 @@ namespace DbMigrate.Model.Support
         {
             return HashCode.Combine(Min, Max);
         }
+
+        public DatabaseVersion WithMax(long targetVersion)
+        {
+            return new DatabaseVersion(Min, targetVersion);
+        }
+
+        public DatabaseVersion WithMin(long targetVersion)
+        {
+            return new DatabaseVersion(targetVersion, Max);
+        }
     }
 }

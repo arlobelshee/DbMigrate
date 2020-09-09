@@ -1,11 +1,12 @@
-﻿using System;
+﻿using DbMigrate.Model.Support;
+using System;
 using System.Threading.Tasks;
 
 namespace DbMigrate.Model
 {
 	public interface IDatabase : IDisposable
 	{
-        Task<long> GetMaxVersion();
+        Task<DatabaseVersion> GetVersion();
 
         bool IsTestDatabase { get; set; }
 		void Commit();

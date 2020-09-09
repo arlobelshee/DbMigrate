@@ -120,12 +120,12 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 			var tranection = new DbTranection(DbToUse, ConnectionStringToUse);
 			using (var testSubject = new DatabaseRemote(tranection, DbToUse))
 			{
-				testSubject.GetMaxVersion().Result.Should().Be(-1);
+				testSubject.GetVersion().Result.Should().Be(new DatabaseVersion(-1, -1));
                 var becomeVersionAware = new MigrationRepoMakeDbVersionAware().LoadMigrationIfPresent(0);
                 testSubject.BeginUpgrade(becomeVersionAware);
-                testSubject.GetMaxVersion().Result.Should().Be(0);
+                testSubject.GetVersion().Result.Should().Be(new DatabaseVersion(0, 0));
                 testSubject.SetMaxVersionTo(3);
-                testSubject.GetMaxVersion().Result.Should().Be(3);
+                testSubject.GetVersion().Result.Should().Be(new DatabaseVersion(0, 3));
             }
 		}
 
