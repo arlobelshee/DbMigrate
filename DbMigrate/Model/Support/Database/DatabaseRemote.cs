@@ -34,8 +34,8 @@ namespace DbMigrate.Model.Support.Database
         {
             foreach (var attempt in _dbEngine.RequestVersionSql)
             {
-                var result = await Tranection.ExecuteScalar<long?>(attempt);
-				if (result.HasValue) return result.Value;
+                var result = await Tranection.ExecuteStructure(attempt, values => new DatabaseVersion((long)values[0], (long)values[1]));
+				if (result.IsKnown) return result.Max;
             }
 			return -2;
         }

@@ -13,16 +13,18 @@ namespace DbMigrate.Model.Support.Database
         public static DbEngine SqlServer = new DbEngine("System.Data.SqlClient", SqlClientFactory.Instance, @"
 if exists(select * from sys.objects where name = '__database_info' and type in ('U'))
 begin
-	select top 1 max_version_number from __database_info;
+	select top 1 min_version_number, max_version_number from __database_info;
 end
 else begin
-	select -1;
+	select -1, -1;
 end");
 
         public static DbEngine SqlLite = new DbEngine("System.Data.SQLite", SQLiteFactory.Instance,
-            @"select case (select count(*) from sqlite_master where type='table' and name='__database_info' collate nocase)
-    when 0 then -1 else NULL end",
-            @"select max_version_number from __database_info limit 1");
+            @"select
+    case version_table.known when 0 then -1 else " + DatabaseVersion.NOT_YET_KNOWN + @" end,
+    case version_table.known when 0 then -1 else " + DatabaseVersion.NOT_YET_KNOWN + @" end
+    from (select count(*) as known from sqlite_master where type='table' and name='__database_info' collate nocase) as version_table",
+            @"select min_version_number, max_version_number from __database_info limit 1");
 
         public static DbEngine None = new DbEngine("", null);
         private static readonly Dictionary<string, DbEngine> KnownEngines;

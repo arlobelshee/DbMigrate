@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
+namespace DbMigrate.Model.Support
 {
-    internal class DatabaseVersion : IEquatable<DatabaseVersion>
+    public class DatabaseVersion : IEquatable<DatabaseVersion>
     {
+        public const long NOT_YET_KNOWN = -2;
         public DatabaseVersion(long min, long max)
         {
             Min = min;
@@ -13,6 +14,7 @@ namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 
         public long Min { get; }
         public long Max { get; }
+        public bool IsKnown { get { return Max != NOT_YET_KNOWN; } }
 
         public override bool Equals(object obj)
         {

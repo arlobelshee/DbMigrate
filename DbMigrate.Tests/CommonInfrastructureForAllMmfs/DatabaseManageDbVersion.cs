@@ -2,6 +2,7 @@
 using DbMigrate.Model.Support.Database;
 using FluentAssertions;
 using NUnit.Framework;
+using System;
 
 namespace DbMigrate.Tests.CommonInfrastructureForAllMmfs
 {
@@ -23,10 +24,10 @@ insert into __database_info(min_version_number, max_version_number) values(0, 0)
         {
             var tracer = new TrannectionTraceOnly
             {
-                ExecuteScalarHandler = sql =>
+                ExecuteStructureHandler = sql =>
                     {
                         sql.Should().Be(DbEngine.SqlLite.RequestVersionSql[0]);
-                        return 6L;
+                        return new DatabaseVersion(3L, 6L);
                     }
             };
             using (var testSubject = new DatabaseRemote(tracer, DbEngine.SqlLite))
