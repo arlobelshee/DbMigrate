@@ -5,21 +5,29 @@ using DbMigrate.Model;
 using DbMigrate.Model.Support.Database;
 using DbMigrate.UI;
 using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
 
 namespace DbMigrate
 {
-	public class MigrateTo : Task
+	public class MigrateTo : Microsoft.Build.Utilities.Task
 	{
 		private readonly MigrationParameters _args = new MigrationParameters();
 
 		[Description(
-			"The target version number (int). If not set, will go to latest defined version. Negative numbers count back from the end. E.g., -1 means the version right before the latest defined version."
+			"The target version number (int). If neither target version is set, will go to latest defined version. Negative numbers count back from the end. E.g., -1 means the version right before the latest defined version."
 		)]
-		public int? TargetVersion
+		public int? TargetMax
 		{
-			get => _args.TargetVersion;
-			set => _args.TargetVersion = value;
+			get => _args.TargetMax;
+			set => _args.TargetMax = value;
+		}
+
+		[Description(
+			"The target version number (int). Negative numbers count back from the end. E.g., -1 means the version right before the latest defined version."
+		)]
+		public int? TargetMin
+		{
+			get => _args.TargetMin;
+			set => _args.TargetMin = value;
 		}
 
 		[Required]
@@ -61,7 +69,7 @@ namespace DbMigrate
 				Validate();
 				using (var db = new Target(_args.ResolvedEngine, ConnectionString, IsTestDatabase))
 				{
-					db.MigrateTo(TargetVersion)
+					db.MigrateTo(TargetMin, TargetMax)
 						.UsingMigrationsFrom(MigrationFolderName)
 						.ExecuteAll();
 				}

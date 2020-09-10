@@ -23,7 +23,9 @@ namespace DbMigrate.Model.Support
 
         public bool Equals([AllowNull] DatabaseVersion other)
         {
-            return other != null && Min == other.Min && Max == other.Max;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Min == other.Min && Max == other.Max;
         }
 
         public override int GetHashCode()
@@ -39,6 +41,21 @@ namespace DbMigrate.Model.Support
         public DatabaseVersion WithMin(long targetVersion)
         {
             return new DatabaseVersion(targetVersion, Max);
+        }
+
+        public static bool operator ==(DatabaseVersion left, DatabaseVersion right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(DatabaseVersion left, DatabaseVersion right)
+        {
+            return !Equals(left, right);
+        }
+
+        public override string ToString()
+        {
+            return $"[{Min}, {Max}]";
         }
     }
 }

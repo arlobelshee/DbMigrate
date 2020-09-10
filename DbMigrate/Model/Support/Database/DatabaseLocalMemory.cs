@@ -40,6 +40,12 @@ namespace DbMigrate.Model.Support.Database
 			if (AppliedMigrations.Count + UnappliedMigrations.Count > 0) CommittedTheChanges = true;
 		}
 
+		public Task SetMinVersionTo(long targetVersion)
+		{
+			version = version.WithMin(targetVersion);
+			return HelperMethods.NoOpAction();
+		}
+
 		public Task SetMaxVersionTo(long targetVersion)
 		{
 			version = version.WithMax(targetVersion);

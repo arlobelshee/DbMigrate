@@ -1,23 +1,27 @@
-﻿using System;
+﻿using DbMigrate.Model.Support;
+using System;
 
 namespace DbMigrate.Model
 {
 	public class ChangeGoal : IEquatable<ChangeGoal>
 	{
-		public ChangeGoal(long currentVersion, long? targetVersion)
+		public ChangeGoal(DatabaseVersion currentVersion, long? targetMin, long? targetMax)
 		{
 			CurrentVersion = currentVersion;
-			TargetVersion = targetVersion;
+			TargetMin = targetMin;
+			TargetMax = targetMax;
 		}
 
-		public long CurrentVersion { get; }
-		public long? TargetVersion { get; }
+		public DatabaseVersion CurrentVersion { get; }
+		public long? TargetMin { get; }
+		public long? TargetMax { get; }
 
 		public bool Equals(ChangeGoal other)
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
-			return other.CurrentVersion == CurrentVersion && other.TargetVersion == TargetVersion;
+			return other.CurrentVersion == CurrentVersion && other.TargetMin == TargetMin
+				&& other.TargetMax == TargetMax;
 		}
 
 		public override bool Equals(object obj)
@@ -29,9 +33,7 @@ namespace DbMigrate.Model
 		{
 			unchecked
 			{
-				var result = CurrentVersion;
-				result = (result * 397) ^ (TargetVersion ?? -1);
-				return (int) result;
+				return HashCode.Combine(CurrentVersion.GetHashCode(), TargetMin, TargetMax);
 			}
 		}
 
@@ -47,8 +49,7 @@ namespace DbMigrate.Model
 
 		public override string ToString()
 		{
-			return string.Format("Request to go from version {0} to version {1}.", CurrentVersion,
-				(object) TargetVersion ?? "latest");
+			return $"Request to go from version {CurrentVersion} to version [{TargetMin}, {(object)TargetMax ?? "latest"}].";
 		}
 	}
 }

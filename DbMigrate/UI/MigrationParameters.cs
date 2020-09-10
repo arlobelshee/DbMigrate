@@ -16,9 +16,14 @@ namespace DbMigrate.UI
 		public string ConnectionString { get; set; }
 
 		[Description(
-			"The target version number (int). If not set, will go to latest defined version. Negative numbers count back from the end. E.g., -1 means the version right before the latest defined version."
+			"The target max version number (int). If neither version is set, max will go to latest defined version. Negative numbers count back from the end. E.g., -1 means the version right before the latest defined version."
 		)]
-		public int? TargetVersion { get; set; }
+		public int? TargetMax { get; set; }
+
+		[Description(
+			"The target min number (int). Negative numbers count back from the end. E.g., -1 means the version right before the latest defined version."
+		)]
+		public int? TargetMin { get; set; }
 
 		[Description("The folder that contains the migration definition files. (required)")]
 		public string Migrations { get; set; }
@@ -29,11 +34,12 @@ namespace DbMigrate.UI
 		[Description("Indicates that this is a test database. Therefore, test data will be applied to it.")]
 		public bool IsTestDatabase { get; set; }
 
-		public void Validate(IModelBindingDefinition<MigrationParameters> commandLineParser)
+        public void Validate(IModelBindingDefinition<MigrationParameters> commandLineParser)
 		{
 			if (Help || string.IsNullOrEmpty(Engine) || string.IsNullOrEmpty(ConnectionString) ||
 			    string.IsNullOrEmpty(Migrations))
 				throw new TerminateAndShowHelp(commandLineParser);
+			Require.Not(TargetMax.HasValue && TargetMin.HasValue, 3, UserMessage.ErrorMultipleTargets);
 			ResolvedEngine = DbEngine.LookUpByName(Engine);
 		}
 	}

@@ -51,6 +51,11 @@ namespace DbMigrate.Model.Support.Database
 			GC.SuppressFinalize(this);
 		}
 
+		public Task SetMinVersionTo(long targetVersion)
+		{
+			return Tranection.ExecuteNonQuery(UpdateVersionSqlFormat.Format("min", targetVersion));
+		}
+
 		public Task SetMaxVersionTo(long targetVersion)
 		{
 			return Tranection.ExecuteNonQuery(UpdateVersionSqlFormat.Format("max", targetVersion));

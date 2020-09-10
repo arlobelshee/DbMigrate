@@ -57,6 +57,15 @@ namespace DbMigrate.Tests.UnderstandWhatUserWantsToDo
 		}
 
 		[Test]
+		public void ChangingBothVersionsShouldShowError()
+		{
+			CommandLine("--migrations", "ignore", "--connectionstring", "ignore", "--engine", "sqlite", "--targetmin", "3", "--targetmax", "9")
+				.Should().Throw<TerminateProgramWithMessageException>().WithMessage(@"Cannot update both the min and max version at once.
+
+Please update one end of the range at a time.");
+		}
+
+		[Test]
 		public void MissingConnectionStringShouldShowHelp()
 		{
 			CommandLine("--migrations", "valid_value", "--engine", "valid_value")
@@ -81,14 +90,15 @@ namespace DbMigrate.Tests.UnderstandWhatUserWantsToDo
 		public void MissingTargetVersionShouldDefaultToNull()
 		{
 			var parameters = ParseCommandLine("ignore", "ignore", "sqlite");
-			parameters.TargetVersion.Should().Be(null);
+			parameters.TargetMin.Should().Be(null);
+			parameters.TargetMax.Should().Be(null);
 		}
 
 		[Test]
 		public void NegativeTargetVersionShouldBeAllowed()
 		{
-			var parameters = ParseCommandLine("ignore", "ignore", "sqlite", "--targetversion", "-9");
-			parameters.TargetVersion.Should().Be(-9);
+			var parameters = ParseCommandLine("ignore", "ignore", "sqlite", "--targetmax", "-9");
+			parameters.TargetMax.Should().Be(-9);
 		}
 
 		[Test]
@@ -109,10 +119,17 @@ namespace DbMigrate.Tests.UnderstandWhatUserWantsToDo
 		}
 
 		[Test]
-		public void TargetVersionShouldBeReadIfPresent()
+		public void TargetMaxShouldBeReadIfPresent()
 		{
-			var parameters = ParseCommandLine("ignore", "ignore", "sqlite", "--targetversion", "3");
-			parameters.TargetVersion.Should().Be(3);
+			var parameters = ParseCommandLine("ignore", "ignore", "sqlite", "--targetmax", "3");
+			parameters.TargetMax.Should().Be(3);
+		}
+
+		[Test]
+		public void TargetMinShouldBeReadIfPresent()
+		{
+			var parameters = ParseCommandLine("ignore", "ignore", "sqlite", "--targetmin", "3");
+			parameters.TargetMin.Should().Be(3);
 		}
 	}
 }

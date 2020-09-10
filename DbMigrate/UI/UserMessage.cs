@@ -1,4 +1,6 @@
-﻿namespace DbMigrate.UI
+﻿using System;
+
+namespace DbMigrate.UI
 {
 	internal static class UserMessage
 	{
@@ -46,6 +48,11 @@ I don't know how to extract the version number from the file name
 
 Migration files are required to be named like 'X_name.migration.sql', where
 X is the version number and name can be anything you want.";
+
+		internal const string ErrorMultipleTargets = @"Cannot update both the min and max version at once.
+
+Please update one end of the range at a time.";
+
 
 		internal const string ErrorMissingMigrationDirectory =
 			@"Could not find migration directory.

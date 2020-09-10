@@ -10,6 +10,7 @@ namespace DbMigrate.Model
 
         bool IsTestDatabase { get; set; }
 		void Commit();
+		Task SetMinVersionTo(long targetVersion);
 		Task SetMaxVersionTo(long targetVersion);
 		void BeginUpgrade(MigrationSpecification migration);
 		void BeginDowngrade(MigrationSpecification migration);

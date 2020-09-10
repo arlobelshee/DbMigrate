@@ -36,43 +36,44 @@ namespace DbMigrate.Model
 
 		public static MigrationSet MakePlan(IDatabase database, ChangeGoal spec, params IMigrationLoader[] migrationLoaders)
 		{
-			var targetVersion = FindTrueTargetVersion(spec.TargetVersion, migrationLoaders);
+			var targetVersion = FindTrueTargetVersion(spec.TargetMax, migrationLoaders);
 			User.Notify(DescribePlan(spec.CurrentVersion, targetVersion));
 			var plan = PlanToGetFromCurrentToTarget(spec, targetVersion);
 			return new MigrationSet(plan, database, migrationLoaders);
 		}
 
-		private static ChangePlan PlanToGetFromCurrentToTarget(ChangeGoal spec, long targetVersion)
+		private static ChangePlan PlanToGetFromCurrentToTarget(ChangeGoal spec, TargetVersion targetVersion)
 		{
-			if (targetVersion >= spec.CurrentVersion)
+			if (targetVersion.IsAtLeast(spec.CurrentVersion))
 			{
-				var firstMigrationToApply = spec.CurrentVersion + 1;
+				var firstMigrationToApply = targetVersion.EndToMove.Pick(spec.CurrentVersion) + 1;
 				return new ChangePlan(Do.BeginUp,
-					Enumerable.Range((int)firstMigrationToApply, (int)(targetVersion - firstMigrationToApply + 1)));
+					Enumerable.Range((int)firstMigrationToApply, (int)(targetVersion.Destination - firstMigrationToApply + 1)));
 			}
 			else
 			{
-				var firstMigrationToApply = spec.CurrentVersion;
+				var firstMigrationToApply = targetVersion.EndToMove.Pick(spec.CurrentVersion);
 				return new ChangePlan(Do.BeginDown,
-					Enumerable.Range((int)(targetVersion + 1), (int)(firstMigrationToApply - targetVersion)).Reverse());
+					Enumerable.Range((int)(targetVersion.Destination + 1), (int)(firstMigrationToApply - targetVersion.Destination)).Reverse());
 			}
 		}
 
-		private static long FindTrueTargetVersion(long? targetVersionNumber, IEnumerable<IMigrationLoader> migrationLoaders)
+		private static TargetVersion FindTrueTargetVersion(long? targetVersionNumber, IEnumerable<IMigrationLoader> migrationLoaders)
 		{
 			var highestDefinedMigration = migrationLoaders.Max(l => l.MaxMigrationVersionFound);
 			if (targetVersionNumber == null)
-				return highestDefinedMigration;
+				return new TargetVersion(TargetVersion.End.Max, highestDefinedMigration);
 			if (targetVersionNumber < 0)
-				return Math.Max(0, highestDefinedMigration + targetVersionNumber.Value);
-			return targetVersionNumber.Value;
+				return new TargetVersion(TargetVersion.End.Max,
+					Math.Max(0, highestDefinedMigration + targetVersionNumber.Value));
+			return new TargetVersion(TargetVersion.End.Max, targetVersionNumber.Value);
 		}
 
-		private static string DescribePlan(long currentVersion, long targetVersion)
+		private static string DescribePlan(DatabaseVersion currentVersion, TargetVersion targetVersion)
 		{
-			if (currentVersion == -1)
-				return string.Format("Migrating version-unaware database to version {0}.", targetVersion);
-			return "Migrating database from version {0} to version {1}.".Format(currentVersion, targetVersion);
+			if (currentVersion.Max == -1)
+				return $"Migrating version-unaware database to version {targetVersion.Destination}.";
+			return $"Migrating database {targetVersion.EndToMove} from version {targetVersion.EndToMove.Pick(currentVersion)} to version {targetVersion.Destination}.";
 		}
 	}
 }

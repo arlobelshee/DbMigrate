@@ -27,21 +27,21 @@ namespace DbMigrate.Tests.LetUserSeeProgress
 
 		public static object[][] VersionPlanCases =
 		{
-			new object[] {2, 4, "Migrating database from version 2 to version 4."},
-			new object[] {9, null, "Migrating database from version 9 to version 5."},
-			new object[] {9, -2, "Migrating database from version 9 to version 3."},
-			new object[] {-1, 4, "Migrating version-unaware database to version 4."},
-			new object[] {-1, null, "Migrating version-unaware database to version 5."},
-			new object[] {-1, -2, "Migrating version-unaware database to version 3."}
+			new object[] {new DatabaseVersion(1, 2), null, 4, "Migrating database from version 2 to version 4."},
+			new object[] {new DatabaseVersion(3, 9), null, null, "Migrating database from version 9 to version 5."},
+			new object[] {new DatabaseVersion(3, 9), null, -2, "Migrating database from version 9 to version 3."},
+			new object[] {new DatabaseVersion(-1, -1), null, 4, "Migrating version-unaware database to version 4."},
+			new object[] { new DatabaseVersion(-1, -1), null, null, "Migrating version-unaware database to version 5."},
+			new object[] { new DatabaseVersion(-1, -1), null, -2, "Migrating version-unaware database to version 3."}
 		};
 
 		private List<string> _messagesSentToUser;
 		public TestContext TestContext { get; set; }
 
-		private static void PlanToGoBetweenVersions(int currentVersion, int? targetVersion)
+		private static void PlanToGoBetweenVersions(DatabaseVersion currentVersion, int? targetMin, int? targetMax)
 		{
 			var databaseLocalMemory = new DatabaseLocalMemory();
-			ChangePlanner.MakePlan(databaseLocalMemory, new ChangeGoal(currentVersion, targetVersion),
+			ChangePlanner.MakePlan(databaseLocalMemory, new ChangeGoal(currentVersion, targetMin, targetMax),
 				TestData.Migrations(3, 4, 5).ToLoaders());
 		}
 
@@ -60,9 +60,9 @@ namespace DbMigrate.Tests.LetUserSeeProgress
 
 		[Test]
 		[TestCaseSource(nameof(VersionPlanCases))]
-		public void ShouldExpressCorrectPlanToUser(int currentVersion, int? targetVersion, string userMessage)
+		public void ShouldExpressCorrectPlanToUser(DatabaseVersion currentVersion, int? targetMin, int? targetMax, string userMessage)
 		{
-			PlanToGoBetweenVersions(currentVersion, targetVersion);
+			PlanToGoBetweenVersions(currentVersion, targetMin, targetMax);
 
 			_messagesSentToUser.Should().ContainInOrder(new[]
 			{

@@ -23,14 +23,14 @@ namespace DbMigrate.Model
             GC.SuppressFinalize(this);
         }
 
-        public ChangePlanner MigrateTo(int? targetVersion)
+        public ChangePlanner MigrateTo(int? targetMin, int? targetMax)
 		{
-			return new ChangePlanner(Database, FigureOutTheGoal(Database, targetVersion));
+			return new ChangePlanner(Database, FigureOutTheGoal(Database, targetMin, targetMax));
 		}
 
-		public static ChangeGoal FigureOutTheGoal(IDatabase database, int? targetVersion)
+		public static ChangeGoal FigureOutTheGoal(IDatabase database, int? targetMin, int? targetMax)
 		{
-			return new ChangeGoal(database.GetVersion().Result.Max, targetVersion);
+			return new ChangeGoal(database.GetVersion().Result, targetMin, targetMax);
 		}
 	}
 }

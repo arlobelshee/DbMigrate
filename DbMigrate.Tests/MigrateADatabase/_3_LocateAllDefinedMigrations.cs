@@ -14,7 +14,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 		public void MigrationSetShouldFindMigrationsFromDiskAndSpecialZeroMigrationLoader()
 		{
 			const string dirName = "c:\\";
-			var testSubject = new ChangePlanner(null, new ChangeGoal(0, null));
+			var testSubject = new ChangePlanner(null, new ChangeGoal(new DatabaseVersion(0, 0), null, null));
 			var result = testSubject.UsingMigrationsFrom(dirName);
 			result.Loaders.Should().BeEquivalentTo(
 				new MigrationRepoDirectory(new DirectoryOnDisk(dirName)),
@@ -25,7 +25,7 @@ namespace DbMigrate.Tests.MigrateADatabase
 		public void MigrationSetShouldGiveGoodErrorWhenGivenInvalidDirectory()
 		{
 			const string dirName = @"c:\directory\that\does\not\exist";
-			var testSubject = new ChangePlanner(null, new ChangeGoal(0, null));
+			var testSubject = new ChangePlanner(null, new ChangeGoal(new DatabaseVersion(0, 0), null, null));
 			testSubject.Invoking(t => t.UsingMigrationsFrom(dirName))
 				.Should().Throw<TerminateProgramWithMessageException>()
 				.WithMessage(

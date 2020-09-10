@@ -18,7 +18,7 @@ namespace DbMigrate
 				using (var db = new Target(args.ResolvedEngine, args.ConnectionString, args.IsTestDatabase))
 				{
 					Console.WriteLine();
-					db.MigrateTo(args.TargetVersion)
+					db.MigrateTo(args.TargetMin, args.TargetMax)
 						.UsingMigrationsFrom(args.Migrations)
 						.ExecuteAll();
 				}
